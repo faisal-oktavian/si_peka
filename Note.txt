@@ -1,0 +1,3 @@
+SI PEKA -> Sistem Informasi Kepuasan Pasien
+
+Sistem ini digunakan untuk mengevaluasi terhadap kepuasan dalam penanganan ke pasien
