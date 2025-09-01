@@ -105,6 +105,24 @@ class CI_AZApp extends CI_AZ {
 		$this->CI->config->load("config");       
         $theme = $this->CI->config->item('theme');
 
+		 // Ambil URL yang sedang dibuka
+		$current_url = $this->CI->input->server('REQUEST_URI');
+		// var_dump($current_url); echo '<br>';
+
+		// Cek apakah URL mengandung 'admin'
+		$is_admin = (strpos($current_url, '/administrator') !== false);
+		// var_dump($is_admin); die();
+
+		if (!$is_admin) {
+			// jika sedang membuka halaman pengunjung
+			$theme = $this->CI->config->item('theme_front');
+		}
+		else {
+			// jika sedang membuka halaman administrator
+			$theme = $this->CI->config->item('theme');
+		}
+
+
 		$azapp = '';
 		$header_app = APPPATH.'views/v_header.php';
 		$header_app_def = DEFPATH.'views/v_header.php';

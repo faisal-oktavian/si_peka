@@ -26,12 +26,11 @@ date_default_timezone_set('Asia/Jakarta');
 */
 
 $config['base_url']    = "http://" . $_SERVER['HTTP_HOST'];
-// $config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/Pulsa/';
 $config['base_url'] .= preg_replace('@/+$@', '', dirname($_SERVER['SCRIPT_NAME'])) . '/';
 
 $config['app_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/si_peka/administrator/'.'';
 $config['theme'] = 'ltheme';
-// $config['theme'] = 'azcmsdefault';
+$config['theme_front'] = 'azcmsdefault';
 
 $config['google_key'] = '6LdowLYUAAAAAHsQYD-61Pzg_560xW3Se3rEJzZJ';
 $config['google_secret'] = '6LdowLYUAAAAAEwIa1rPAukXm5KsISbMlgLsreVe';
