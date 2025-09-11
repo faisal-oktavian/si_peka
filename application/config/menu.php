@@ -50,6 +50,18 @@ $config['menu'] = array(
         ),
     ),
     array(
+        "name" => "responden",
+        "title" => "Responden",
+        "icon" => "users",
+        "url" => "responden",
+        'role' => array(
+            array(
+                'role_name' => 'role_view_responden',
+                'role_title' => 'Hanya lihat data'
+            ),
+        ),
+    ),
+    array(
         "name" => "user",
         "title" => azlang("User"),
         "icon" => "user",
