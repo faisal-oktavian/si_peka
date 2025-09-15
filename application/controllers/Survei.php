@@ -17,7 +17,13 @@ class Survei extends AZ_Controller {
         $this->db->where('is_active', 1);
         $ruangan = $this->db->get('ruangan');
 
+		$this->db->where('status', 1);
+        $this->db->where('is_active', 1);
+		$this->db->order_by('sequence', 'ASC');
+        $layanan = $this->db->get('layanan');
+
         $data['ruangan'] = $ruangan;
+        $data['layanan'] = $layanan;
 
 		$v = $this->load->view('v_survei', $data, true);
 		$app->add_content($v);

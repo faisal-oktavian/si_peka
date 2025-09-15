@@ -18,6 +18,8 @@
     <!-- Tambahkan baris ini untuk Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -167,6 +169,144 @@
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             text-align: left;
         }
+
+
+        /* ...existing code... */
+        .is-invalid {
+            border: 2px solid #e74c3c !important;
+            background: #fff6f6;
+            animation: shake 0.25s;
+            position: relative;
+            padding-right: 36px !important;
+        }
+        .invalid-feedback {
+            color: #e74c3c;
+            font-size: 0.97em;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            animation: fadeInError 0.5s forwards;
+        }
+        .invalid-feedback .fa {
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0);}
+            20% { transform: translateX(-6px);}
+            40% { transform: translateX(6px);}
+            60% { transform: translateX(-4px);}
+            80% { transform: translateX(4px);}
+            100% { transform: translateX(0);}
+        }
+        @keyframes fadeInError {
+            to { opacity: 1; }
+        }
+
+        .kepuasan-wrapper {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 90px;
+            flex-wrap: wrap; /* biar di HP bisa turun ke bawah */
+        }
+
+        .btn-kepuasan {
+            background: none;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-kepuasan img {
+            width: 80px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .btn-kepuasan:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-btn-wrapper {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap; /* supaya kalau sempit tombol bisa ke bawah */
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .kepuasan-wrapper {
+            gap: 15px;
+            }
+
+            .btn-kepuasan img {
+            width: 60px;
+            }
+        }
+        .description-puas h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #1e3a8a; /* biru elegan */
+        }
+
+        .description-tidak-puas h2 {
+            font-size: 22px;
+            /* font-weight: 700; */
+            margin-bottom: 5px;
+        }
+
+        .description-puas p, .description-tidak-puas p {
+            font-size: 16px;
+            margin: 4px 0;
+            line-height: 1.6;
+            color: #374151;
+            text-align: center;
+        }
+
+        .survey-table {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .survey-row {
+            display: grid;
+            /* grid-template-columns: 1fr 1fr 1fr; */
+            grid-template-columns: 160px 1fr 290px;
+            gap: 10px;
+            align-items: center;
+        }
+        .survey-col select, .survey-col input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .survey-col.label {
+            font-weight: bold;
+            text-align: left;
+            color: #374151;
+            font-size: 100%;
+        }
+        .survey-col.label small {
+            font-weight: normal;
+            font-size: 9px;
+            color: #555;
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .survey-row {
+            grid-template-columns: 1fr;
+            margin-top: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -205,24 +345,118 @@
             </div>
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                 <button type="button" class="btn-back" style="background:#6c757d;" onclick="window.location.href='<?php echo site_url(""); ?>'"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
-                <button type="button" class="btn" id="btn-next">Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                <button type="button" class="btn" id="btn-next-1">Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
             </div>
         </form>
 
-        <!-- form puas / tidak puas -->
+        <!-- Step 2: Pilih puas/tidak puas -->
         <form id="form-step2" style="display:none;">
-            <div class="form-group">
-                <label>Bagaimana pelayanan kami?</label>
-                <select class="form-control" name="pelayanan">
-                    <option value="baik">Baik</option>
-                    <option value="cukup">Cukup</option>
-                    <option value="kurang">Kurang</option>
-                </select>
+            <div class="form-group" style="text-align:center;">
+                <label style="font-size:18px;">Bagaimana tingkat kepuasan Anda?</label>
+
+                <div class="kepuasan-wrapper">
+                    <button type="button" class="btn-kepuasan" data-value="puas">
+                        <img src="<?php echo base_url('application/assets/logo/puas.png'); ?>" alt="Puas">
+                        <div>Puas</div>
+                    </button>
+                    <button type="button" class="btn-kepuasan" data-value="tidak_puas">
+                        <img src="<?php echo base_url('application/assets/logo/tidak puas.png'); ?>" alt="Tidak Puas">
+                        <div>Tidak Puas</div>
+                    </button>
+                </div>
+
+                <input type="hidden" name="kepuasan" id="kepuasan">
+            </div>
+
+            <div class="nav-btn-wrapper">
+                <button type="button" class="btn-back" id="btn-prev-2"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
+                <button type="button" class="btn" id="btn-next-2" disabled>Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+        </form>
+
+        <!-- Step 3: Layanan -->
+        <form id="form-step3" style="display:none;">
+            <div class="form-group" style="margin-top: 30px;">
+                <div class="description-puas" >
+                    <h2>Terimakasih</h2>
+                    <p>Atas Apresiasi Anda</p>
+                    <p><em>Mohon Saran Untuk Peningkatan Layanan Kami</em></p>
+                </div>
+                <div class="description-tidak-puas" style="display:none;" >
+                    <h2>Ijinkan Kami Berbenah</h2>
+                    <p>Layanan Apa yang Membuat Anda Tidak Puas?</p>
+                </div>
+                <div style="margin:15px 0;">
+                    <div class="survey-table">
+                        <div class="survey-row">
+                            <div class="survey-col label">Petugas <br><small>(Keramahan, Sikap, Penampilan)</small></div>
+                            <div class="survey-col">
+                                <select class="form-control select2" id="idlayanan_petugas" name="idlayanan_petugas" style="width: 100%;">
+                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                    <?php 
+                                        foreach ($ruangan->result() as $key => $value) {
+                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="survey-col">
+                                <input type="text" class="form-control" id="description_petugas" name="description_petugas" placeholder="Apa yang membuat anda tidak puas?"/>
+                            </div>
+                        </div>
+                        <div class="survey-row">
+                            <div class="survey-col label">Fasilitas</div>
+                            <div class="survey-col">
+                                <select class="form-control select2" id="idlayanan_fasilitas" name="idlayanan_fasilitas" style="width: 100%;">
+                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                    <?php 
+                                        foreach ($ruangan->result() as $key => $value) {
+                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="survey-col">
+                                <input type="text" class="form-control" id="description_fasilitas" name="description_fasilitas" placeholder="Apa yang membuat anda tidak puas?"/>
+                            </div>
+                        </div>
+                        <div class="survey-row">
+                            <div class="survey-col label">Prosedur Layanan</div>
+                            <div class="survey-col">
+                                <select class="form-control select2" id="idlayanan_prosedur" name="idlayanan_prosedur" style="width: 100%;">
+                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                    <?php 
+                                        foreach ($ruangan->result() as $key => $value) {
+                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="survey-col">
+                                <input type="text" class="form-control" id="description_prosedur" name="description_prosedur" placeholder="Apa yang membuat anda tidak puas?"/>
+                            </div>
+                        </div>
+                        <div class="survey-row">
+                            <div class="survey-col label">Waktu Layanan</div>
+                            <div class="survey-col">
+                                <select class="form-control select2" id="idlayanan_waktu" name="idlayanan_waktu" style="width: 100%;">
+                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                    <?php 
+                                        foreach ($ruangan->result() as $key => $value) {
+                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="survey-col">
+                                <input type="text" class="form-control" id="description_waktu" name="description_waktu" placeholder="Apa yang membuat anda tidak puas?"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                <button type="button" class="btn-back" id="btn-prev" style="background:#6c757d;">
-                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali
-                </button>
+                <button type="button" class="btn-back" id="btn-prev-3" style="background:#6c757d;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
                 <button type="submit" class="btn">Kirim</button>
             </div>
         </form>
@@ -239,51 +473,180 @@
             allowClear: false
         });
 
-        // Simpan data sementara
+        $('#idlayanan_petugas').select2({
+            placeholder: "-- Pilih Ruang --",
+            allowClear: false
+        });
+
+        $('#idlayanan_fasilitas').select2({
+            placeholder: "-- Pilih Ruang --",
+            allowClear: false
+        });
+
+        $('#idlayanan_prosedur').select2({
+            placeholder: "-- Pilih Ruang --",
+            allowClear: false
+        });
+
+        $('#idlayanan_waktu').select2({
+            placeholder: "-- Pilih Ruang --",
+            allowClear: false
+        });
+
         let formData = {};
 
-        $('#btn-next').on('click', function(e) {
+        // Helper untuk menampilkan error pada input
+        function showInputError(selector, message) {
+            $(selector).addClass('is-invalid');
+            if ($(selector).next('.invalid-feedback').length === 0) {
+                $(selector).after('<div class="invalid-feedback"><i class="fa fa-exclamation-circle"></i> '+message+'</div>');
+            }
+        }
+        function clearInputError(selector) {
+            $(selector).removeClass('is-invalid');
+            $(selector).next('.invalid-feedback').remove();
+        }
+
+        // Step 1 -> Step 2
+        $('#btn-next-1').on('click', function(e) {
             e.preventDefault();
-            // Ambil data input
+            let valid = true;
+            clearInputError('#nama_pasien');
+            clearInputError('#no_rm');
+            clearInputError('#idruangan');
+
             formData.nama_pasien = $('#nama_pasien').val();
             formData.no_rm = $('#no_rm').val();
             formData.idruangan = $('#idruangan').val();
 
-            // Validasi sederhana
-            if(!formData.nama_pasien || !formData.no_rm || !formData.idruangan) {
-                alert('Mohon lengkapi semua data!');
+            // form validasi
+            if(!formData.nama_pasien) {
+                showInputError('#nama_pasien', 'Nama pasien wajib diisi');
+                valid = false;
+            }
+            if(!formData.no_rm) {
+                showInputError('#no_rm', 'No. RM wajib diisi');
+                valid = false;
+            }
+            if(!formData.idruangan) {
+                showInputError('#idruangan', 'Ruang wajib dipilih');
+                $('.select2-selection').addClass('is-invalid');
+                valid = false;
+            } 
+            else {
+                $('.select2-selection').removeClass('is-invalid');
+            }
+            
+            if(!valid) {
+                // Scroll ke input pertama yang error
+                $('.is-invalid:first').focus();
                 return;
             }
-
-            // Sembunyikan step 1, tampilkan step 2
             $('#form-step1').hide();
             $('#form-step2').show();
         });
 
-         // Tombol kembali ke step 1
-        $('#btn-prev').on('click', function(e) {
+        // Step 2: pilih puas/tidak puas
+        $('.btn-kepuasan').on('click', function() {
+            $('.btn-kepuasan').css('border','none');
+            $(this).css('border','3px solid #28a745');
+            $('#kepuasan').val($(this).data('value'));
+            $('#btn-next-2').prop('disabled', false);
+            $('#kepuasan').removeClass('is-invalid');
+            $('#kepuasan').next('.invalid-feedback').remove();
+        });
+
+        // Step 2 -> Step 3
+        $('#btn-next-2').on('click', function(e) {
+            e.preventDefault();
+            formData.kepuasan = $('#kepuasan').val();
+            if(!formData.kepuasan) {
+                // Tampilkan error di bawah pilihan
+                if ($('#kepuasan').next('.invalid-feedback').length === 0) {
+                    $('#kepuasan').after('<div class="invalid-feedback" style="display:block;text-align:center;">Silakan pilih tingkat kepuasan!</div>');
+                }
+                $('#kepuasan').addClass('is-invalid');
+                return;
+            }
+            $('#form-step2').hide();
+            $('#form-step3').show();
+        });
+
+        // Step 3 -> Submit
+        $('#form-step3').on('submit', function(e) {
+            e.preventDefault();
+            // Ambil semua layanan yang dipilih dan keterangannya
+            formData.idlayanan_petugas = [];
+            formData.idlayanan_fasilitas = [];
+            formData.idlayanan_prosedur = [];
+            formData.idlayanan_waktu = [];
+
+            formData.idlayanan_petugas = $('#idlayanan_petugas').val();
+            formData.description_petugas = $('#description_petugas').val();
+
+            formData.idlayanan_fasilitas = $('#idlayanan_fasilitas').val();
+            formData.description_fasilitas = $('#description_fasilitas').val();
+
+            formData.idlayanan_prosedur = $('#idlayanan_prosedur').val();
+            formData.description_prosedur = $('#description_prosedur').val();
+
+            formData.idlayanan_waktu = $('#idlayanan_waktu').val();
+            formData.description_waktu = $('#description_waktu').val();
+
+            // Contoh validasi minimal satu layanan dipilih
+            if (
+                (!formData.idlayanan_petugas || formData.idlayanan_petugas === '') &&
+                (!formData.idlayanan_fasilitas || formData.idlayanan_fasilitas === '') &&
+                (!formData.idlayanan_prosedur || formData.idlayanan_prosedur === '') &&
+                (!formData.idlayanan_waktu || formData.idlayanan_waktu === '')
+            ) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pilih Layanan',
+                    text: 'Pilih minimal satu layanan yang ingin dinilai.'
+                });
+                return;
+            }
+
+            // Kirim data ke server via AJAX atau tampilkan
+            // $.post('url_tujuan', formData, function(res){ ... });
+            Swal.fire({
+                icon: 'success',
+                title: 'Terima kasih!',
+                text: 'Survei Anda telah terkirim.'
+            }).then(() => {
+                // location.reload();
+                window.location.href = "<?php echo base_url(); ?>";
+            });
+        });
+
+        // Step 2 <- Step 1
+        $('#btn-prev-2').on('click', function(e) {
             e.preventDefault();
             $('#form-step2').hide();
             $('#form-step1').show();
-            // Kembalikan nilai input ke form-step1 jika perlu
             $('#nama_pasien').val(formData.nama_pasien);
             $('#no_rm').val(formData.no_rm);
             $('#idruangan').val(formData.idruangan).trigger('change');
         });
 
-        // Jika ingin mengirim semua data (step1 + step2) ke server saat submit step2
-        $('#form-step2').on('submit', function(e) {
+        // Step 3 <- Step 2
+        $('#btn-prev-3').on('click', function(e) {
             e.preventDefault();
-            formData.pelayanan = $(this).find('[name="pelayanan"]').val();
-            // Kirim data ke server via AJAX atau submit form
-            console.log(formData);
-            // Contoh AJAX:
-            /*
-            $.post('url_tujuan', formData, function(res){
-                // handle response
-            });
-            */
-            alert('Terima kasih atas survei Anda!');
+            $('#form-step3').hide();
+            $('#form-step2').show();
+            // restore pilihan puas/tidak puas
+            if(formData.kepuasan){
+                $('.btn-kepuasan').each(function(){
+                    if($(this).data('value') === formData.kepuasan){
+                        $(this).css('border','3px solid #28a745');
+                    } else {
+                        $(this).css('border','none');
+                    }
+                });
+                $('#kepuasan').val(formData.kepuasan);
+                $('#btn-next-2').prop('disabled', false);
+            }
         });
     });
 </script>
