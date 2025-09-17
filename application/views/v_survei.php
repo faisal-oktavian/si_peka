@@ -307,6 +307,10 @@
             margin-top: 15px;
             }
         }
+        .swal2-large {
+            font-size: 1.25rem !important;
+            max-width: 420px !important;
+        }
     </style>
 </head>
 <body>
@@ -321,13 +325,13 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Nama Pasien <red>*</red></label>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" id="nama_pasien" name="nama_pasien"/>
+                    <input type="text" class="form-control" id="nama_pasien" name="nama_pasien" placeholder="Masukkan nama pasien"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">No. RM Pasien <red>*</red></label>
                 <div class="col-md-5">
-                    <input type="text" class="form-control format-number" id="no_rm" name="no_rm"/>
+                    <input type="text" class="form-control format-number" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien"/>
                 </div>
             </div>
             <div class="form-group">
@@ -401,7 +405,7 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <input type="text" class="form-control" id="description_petugas" name="description_petugas" placeholder="Apa yang membuat anda tidak puas?"/>
+                                <input type="text" class="form-control" id="description_petugas" name="description_petugas"/>
                             </div>
                         </div>
                         <div class="survey-row">
@@ -417,7 +421,7 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <input type="text" class="form-control" id="description_fasilitas" name="description_fasilitas" placeholder="Apa yang membuat anda tidak puas?"/>
+                                <input type="text" class="form-control" id="description_fasilitas" name="description_fasilitas"/>
                             </div>
                         </div>
                         <div class="survey-row">
@@ -433,7 +437,7 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <input type="text" class="form-control" id="description_prosedur" name="description_prosedur" placeholder="Apa yang membuat anda tidak puas?"/>
+                                <input type="text" class="form-control" id="description_prosedur" name="description_prosedur"/>
                             </div>
                         </div>
                         <div class="survey-row">
@@ -449,7 +453,7 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <input type="text" class="form-control" id="description_waktu" name="description_waktu" placeholder="Apa yang membuat anda tidak puas?"/>
+                                <input type="text" class="form-control" id="description_waktu" name="description_waktu"/>
                             </div>
                         </div>
                     </div>
@@ -506,6 +510,25 @@
             $(selector).removeClass('is-invalid');
             $(selector).next('.invalid-feedback').remove();
         }
+
+        $('#nama_pasien').on('input', function() {
+            if ($(this).val().trim() !== '') {
+                clearInputError('#nama_pasien');
+            }
+        });
+
+        $('#no_rm').on('input', function() {
+            if ($(this).val().trim() !== '') {
+                clearInputError('#no_rm');
+            }
+        });
+
+        $('#idruangan').on('change', function() {
+            if ($(this).val() !== '') {
+                clearInputError('#idruangan');
+                $('.select2-selection').removeClass('is-invalid');
+            }
+        });
 
         // Step 1 -> Step 2
         $('#btn-next-1').on('click', function(e) {
@@ -568,6 +591,28 @@
                 $('#kepuasan').addClass('is-invalid');
                 return;
             }
+
+            if (formData.kepuasan == 'puas') {
+                $('.description-puas').show();
+                $('.description-tidak-puas').hide();
+
+                $('#form-step3').find("input[type=text]").each(function(ev){
+                    if(!$(this).val()) { 
+                        $(this).attr("placeholder", "Masukkan saran Anda");
+                    }
+                });
+            } 
+            else {
+                $('.description-puas').hide();
+                $('.description-tidak-puas').show();
+
+                $('#form-step3').find("input[type=text]").each(function(ev){
+                    if(!$(this).val()) { 
+                        $(this).attr("placeholder", "Apa yang membuat anda tidak puas?");
+                    }
+                });
+            }
+
             $('#form-step2').hide();
             $('#form-step3').show();
         });
@@ -603,21 +648,123 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Pilih Layanan',
-                    text: 'Pilih minimal satu layanan yang ingin dinilai.'
+                    text: 'Pilih minimal satu layanan yang ingin dinilai.',
+                    customClass: {
+                        popup: 'swal2-large'
+                    }
                 });
                 return;
             }
 
+            // Validasi jika layanan dipilih maka keterangannya wajib diisi
+            if (formData.idlayanan_petugas && (!formData.description_petugas || formData.description_petugas.trim() === '')) {
+                showInputError('#description_petugas', 'Keterangan wajib diisi jika layanan dipilih');
+                $('#description_petugas').focus();
+                return;
+            } 
+            else {
+                clearInputError('#description_petugas');
+            }
+            
+            if (formData.idlayanan_fasilitas && (!formData.description_fasilitas || formData.description_fasilitas.trim() === '')) {
+                showInputError('#description_fasilitas', 'Keterangan wajib diisi jika layanan dipilih');
+                $('#description_fasilitas').focus();
+                return;
+            } 
+            else {
+                clearInputError('#description_fasilitas');
+            }
+            
+            if (formData.idlayanan_prosedur && (!formData.description_prosedur || formData.description_prosedur.trim() === '')) {
+                showInputError('#description_prosedur', 'Keterangan wajib diisi jika layanan dipilih');
+                $('#description_prosedur').focus();
+                return;
+            } 
+            else {
+                clearInputError('#description_prosedur');
+            }
+            
+            if (formData.idlayanan_waktu && (!formData.description_waktu || formData.description_waktu.trim() === '')) {
+                showInputError('#description_waktu', 'Keterangan wajib diisi jika layanan dipilih');
+                $('#description_waktu').focus();
+                return;
+            } 
+            else {
+                clearInputError('#description_waktu');
+            }
+
             // Kirim data ke server via AJAX atau tampilkan
             // $.post('url_tujuan', formData, function(res){ ... });
-            Swal.fire({
-                icon: 'success',
-                title: 'Terima kasih!',
-                text: 'Survei Anda telah terkirim.'
-            }).then(() => {
-                // location.reload();
-                window.location.href = "<?php echo base_url(); ?>";
+            $.ajax({
+                url: "<?php echo site_url('survei/save'); ?>",
+                type: "POST",
+                data: {
+                    nama_pasien: formData.nama_pasien,
+                    no_rm: formData.no_rm,
+                    idruangan: formData.idruangan,
+                    kepuasan: formData.kepuasan,
+                    idlayanan_petugas: formData.idlayanan_petugas,
+                    description_petugas: formData.description_petugas,
+                    idlayanan_fasilitas: formData.idlayanan_fasilitas,
+                    description_fasilitas: formData.description_fasilitas,
+                    idlayanan_prosedur: formData.idlayanan_prosedur,
+                    description_prosedur: formData.description_prosedur,
+                    idlayanan_waktu: formData.idlayanan_waktu,
+                    description_waktu: formData.description_waktu
+                },
+                dataType: "json",
+                success: function(res) {
+                    if(res.err_code == 0) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Terima kasih!',
+                            text: res.err_message
+                        }).then(() => {
+                            window.location.href = "<?php echo base_url(); ?>";
+                        });
+                    } 
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: res.message || 'Terjadi kesalahan saat menyimpan data.'
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Terjadi kesalahan saat menyimpan data.'
+                    });
+                }
             });
+        });
+
+        $('#description_petugas').on('input', function() {
+            if ($(this).val().trim() !== '') {
+                clearInputError('#description_petugas');
+            }
+        });
+
+        $('#description_fasilitas').on('input', function() {
+            if ($(this).val().trim() !== '') {
+                clearInputError('#description_fasilitas');
+            }
+        });
+
+        $('#description_prosedur').on('change', function() {
+            if ($(this).val() !== '') {
+                clearInputError('#description_prosedur');
+                $('.select2-selection').removeClass('is-invalid');
+            }
+        });
+
+        $('#description_waktu').on('change', function() {
+            if ($(this).val() !== '') {
+                clearInputError('#description_waktu');
+                $('.select2-selection').removeClass('is-invalid');
+            }
         });
 
         // Step 2 <- Step 1
