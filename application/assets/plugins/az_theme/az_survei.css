@@ -1,0 +1,283 @@
+.card {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 700px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    animation: fadeIn 1.2s ease-in-out;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+h1 {
+    color: #1e3a8a;
+    margin-bottom: 20px;
+    animation: slideDown 1s ease forwards;
+    font-size: 2rem !important;
+}
+p {
+    color: #374151;
+    line-height: 1.8;
+    text-align: justify;
+    animation: fadeIn 1.5s ease forwards;
+}
+.btn, .btn-back {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 10px !important;
+    cursor: pointer;
+    font-size: 16px !important;
+    transition: all 0.3s ease;
+    animation: fadeInUp 2s ease forwards;
+    width: 100%;
+    max-width: 220px;
+    box-sizing: border-box;
+}
+.btn:hover {
+    background: #218838 !important;
+    color: #fff !important;
+    transform: scale(1.07);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.btn-back:hover {
+    background: #b7bcc0 !important;
+    transform: scale(1.07);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.survey-top-title {
+    margin: -80px auto 20px auto;
+    background-color: #28a745;
+    border-radius: 15px;
+    display: inline-block;
+    padding: 8px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.survey-top-title img {
+    height: 90px;
+    max-width: 100%;
+    display: block;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    text-align: left;
+}
+.is-invalid {
+    border: 2px solid #e74c3c !important;
+    background: #fff6f6;
+    animation: shake 0.25s;
+    position: relative;
+    padding-right: 36px !important;
+}
+.invalid-feedback {
+    color: #e74c3c;
+    font-size: 0.97em;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    animation: fadeInError 0.5s forwards;
+}
+.invalid-feedback .fa {
+    color: #e74c3c;
+    font-size: 1.1em;
+}
+.kepuasan-wrapper {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 90px;
+    flex-wrap: wrap; /* biar di HP bisa turun ke bawah */
+}
+.btn-kepuasan {
+    background: none;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.btn-kepuasan img {
+    width: 80px;
+    max-width: 100%;
+    height: auto;
+}
+.btn-kepuasan:hover {
+    transform: scale(1.05);
+}
+.nav-btn-wrapper {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap; /* supaya kalau sempit tombol bisa ke bawah */
+}
+.description-puas h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #1e3a8a; /* biru elegan */
+}
+.description-tidak-puas h2 {
+    font-size: 22px;
+    /* font-weight: 700; */
+    margin-bottom: 5px;
+}
+.description-puas p, .description-tidak-puas p {
+    font-size: 16px;
+    margin: 4px 0;
+    line-height: 1.6;
+    color: #374151;
+    text-align: center;
+}
+.survey-table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+.survey-row {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr 1fr; */
+    grid-template-columns: 160px 1fr 290px;
+    gap: 10px;
+    align-items: center;
+}
+.survey-col select, .survey-col input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.survey-col.label {
+    font-weight: bold;
+    text-align: left;
+    color: #374151;
+    font-size: 100%;
+}
+.survey-col.label small {
+    font-weight: normal;
+    font-size: 9px;
+    color: #555;
+}
+.swal2-large {
+    font-size: 1.25rem !important;
+    max-width: 420px !important;
+}
+.copyright-fixed {
+    position: fixed;
+    right: 18px;
+    bottom: 12px;
+    z-index: 9999;
+    /* background: rgba(34,34,34,0.85); */
+    padding: 6px 18px;
+    border-radius: 18px 0 0 18px;
+    font-size: 12px;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    /* pointer-events: none;  <-- HAPUS baris ini */
+    user-select: none;
+}
+.copyright-fixed a {
+    color: #ffffff;
+    text-decoration: underline;
+    pointer-events: auto;
+}
+
+
+/* animation */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+@keyframes slideDown {
+    from {transform: translateY(-20px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+@keyframes fadeInUp {
+    from {transform: translateY(20px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+@keyframes shake {
+    0% { transform: translateX(0);}
+    20% { transform: translateX(-6px);}
+    40% { transform: translateX(6px);}
+    60% { transform: translateX(-4px);}
+    80% { transform: translateX(4px);}
+    100% { transform: translateX(0);}
+}
+@keyframes fadeInError {
+    to { opacity: 1; }
+}
+
+
+/* responsive */
+@media (max-width: 1100px) {
+    .card {
+        margin-top: 50px;
+        max-width: 95vw;
+        padding: 24px 10vw;
+    }
+}
+@media (max-width: 900px) {
+    .card {
+        max-width: 95vw;
+        padding: 24px 10vw;
+    }
+}
+@media (max-width: 768px) {
+    .survey-row {
+    grid-template-columns: 1fr;
+    margin-top: 15px;
+    }
+}
+@media (max-width: 600px) {
+    body {
+        align-items: flex-start;
+        padding: 10px 0;
+    }
+    .card {
+        padding: 18px 8px;
+        border-radius: 12px;
+        margin: 60px 8px 0px 8px;
+    }
+    h1 { 
+        font-size: 1.2rem; 
+    }
+    .survey-top-title img { 
+        height: 55px; 
+    }
+    .survey-top-title {
+        margin: -40px auto 12px auto;
+        padding: 4px 10px;
+        border-radius: 8px;
+    }
+    .btn {
+        font-size: 15px;
+        padding: 10px 0;
+    }
+    p {
+        font-size: 0.97rem;
+    }
+}
+@media (max-width: 576px) {
+    .kepuasan-wrapper {
+    gap: 15px;
+    }
+
+    .btn-kepuasan img {
+    width: 60px;
+    }
+}
+@media (max-width: 400px) {
+    .card {
+        margin-top: 50px;
+        padding: 10px 2px;
+    }
+    h1 { 
+        font-size: 1rem; 
+    }
+}

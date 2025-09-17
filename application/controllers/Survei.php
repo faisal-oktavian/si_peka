@@ -28,8 +28,8 @@ class Survei extends AZ_Controller {
 		$v = $this->load->view('v_survei', $data, true);
 		$app->add_content($v);
 
-		// $js = az_add_js('home/vjs_home');
-		// $app->add_js($js);
+		$js = az_add_js('vjs_survei');
+		$app->add_js($js);
 
 		echo $app->render();	
 	}
