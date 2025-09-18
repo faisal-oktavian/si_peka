@@ -23,7 +23,7 @@ p {
     text-align: justify;
     animation: fadeIn 1.5s ease forwards;
 }
-.btn, .btn-back {
+.btn-next, .btn-back {
     margin-top: 20px;
     padding: 12px 24px;
     background: #28a745;
@@ -38,7 +38,7 @@ p {
     max-width: 220px;
     box-sizing: border-box;
 }
-.btn:hover {
+.btn-next:hover {
     background: #218838 !important;
     color: #fff !important;
     transform: scale(1.07);
@@ -255,7 +255,7 @@ p {
         padding: 4px 10px;
         border-radius: 8px;
     }
-    .btn {
+    .btn-next {
         font-size: 15px;
         padding: 10px 0;
     }

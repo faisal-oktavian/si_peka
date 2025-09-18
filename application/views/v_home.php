@@ -44,6 +44,6 @@
         <p>Hormat Kami,<br>
         <b>Manajemen RSUD Sumberglagah</b></p>
 
-        <button class="btn" onclick="window.location.href='<?php echo site_url("survei"); ?>'">Mulai Survei</button>
+        <button class="btn-next" onclick="window.location.href='<?php echo site_url("survei"); ?>'">Mulai Survei</button>
     </div>
 </div>

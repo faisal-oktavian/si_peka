@@ -66,7 +66,7 @@
             </div>
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                 <button type="button" class="btn-back" style="background:#6c757d;" onclick="window.location.href='<?php echo site_url(""); ?>'"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
-                <button type="button" class="btn" id="btn-next-1">Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                <button type="button" class="btn-next" id="btn-next-1">Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
             </div>
         </form>
 
@@ -91,7 +91,7 @@
 
             <div class="nav-btn-wrapper">
                 <button type="button" class="btn-back" id="btn-prev-2"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
-                <button type="button" class="btn" id="btn-next-2" disabled>Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+                <button type="button" class="btn-next" id="btn-next-2" disabled>Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
             </div>
         </form>
 
@@ -178,7 +178,7 @@
             </div>
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                 <button type="button" class="btn-back" id="btn-prev-3" style="background:#6c757d;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
-                <button type="submit" class="btn">Kirim <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                <button type="submit" class="btn-next">Kirim <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
             </div>
         </form>
 

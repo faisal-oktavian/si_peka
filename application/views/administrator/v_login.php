@@ -48,7 +48,7 @@
 
             body {
                 margin: 0;
-                background-image: url('../application/assets/bg_login.png');
+                background-image: url('<?php echo base_url("application/assets/bg_login.png"); ?>');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
