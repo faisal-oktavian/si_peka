@@ -28,6 +28,10 @@
         align-items: center !important;
         justify-content: center !important;
     }
+    red {
+        color: red;
+        font-family: 'Poppins', sans-serif;
+    }
 </style>
 
 <div class="card">
