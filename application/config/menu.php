@@ -55,10 +55,10 @@ $config['menu'] = array(
         "icon" => "users",
         "url" => "responden",
         'role' => array(
-            array(
-                'role_name' => 'role_view_responden',
-                'role_title' => 'Hanya lihat data'
-            ),
+            // array(
+            //     'role_name' => 'role_view_responden',
+            //     'role_title' => 'Hanya lihat data'
+            // ),
         ),
     ),
     array(
