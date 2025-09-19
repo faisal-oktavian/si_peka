@@ -138,18 +138,66 @@ class Responden extends CI_Controller {
 	{
 		$id = $this->input->get('id');
 
-		$this->db->where('idresponden', $id);
-        $this->db->join('ruangan petugas', 'responden.idlayanan_petugas = petugas.idruangan', 'left');
-        $this->db->join('ruangan fasilitas', 'responden.idlayanan_fasilitas = fasilitas.idruangan', 'left');
-        $this->db->join('ruangan prosedur', 'responden.idlayanan_prosedur = prosedur.idruangan', 'left');
-        $this->db->join('ruangan waktu', 'responden.idlayanan_waktu = waktu.idruangan', 'left');
-
-		$this->db->select('no_rm, nama_pasien, kepuasan, petugas.nama_ruangan as petugas_nama_ruangan, description_petugas, fasilitas.nama_ruangan as fasilitas_nama_ruangan, description_fasilitas, prosedur.nama_ruangan as prosedur_nama_ruangan, description_prosedur, waktu.nama_ruangan as waktu_nama_ruangan, description_waktu');
+		$this->db->where('responden.idresponden', $id);
+		$this->db->select('no_rm, nama_pasien, kepuasan');
 		$responden = $this->db->get('responden');
         // echo "<pre>"; print_r($this->db->last_query()); die();
 
 		if ($responden->num_rows() > 0) {
+			$total_data = 1;
+
+			// layanan petugas
+			$this->db->where('responden_detail.idresponden', $id);
+			$this->db->where('idlayanan_petugas IS NOT NULL');
+			$this->db->join('layanan', 'responden_detail.idlayanan_petugas = layanan.idlayanan', 'left');
+			$resp_petugas = $this->db->get('responden_detail');
+
+			// layanan fasilitas
+			$this->db->where('responden_detail.idresponden', $id);
+			$this->db->where('idlayanan_fasilitas IS NOT NULL');
+			$this->db->join('layanan', 'responden_detail.idlayanan_fasilitas = layanan.idlayanan', 'left');
+			$resp_fasilitas = $this->db->get('responden_detail');
+
+			// layanan prosedur
+			$this->db->where('responden_detail.idresponden', $id);
+			$this->db->where('idlayanan_prosedur IS NOT NULL');
+			$this->db->join('layanan', 'responden_detail.idlayanan_prosedur = layanan.idlayanan', 'left');
+			$resp_prosedur = $this->db->get('responden_detail');
+
+			// layanan waktu
+			$this->db->where('responden_detail.idresponden', $id);
+			$this->db->where('idlayanan_waktu IS NOT NULL');
+			$this->db->join('layanan', 'responden_detail.idlayanan_waktu = layanan.idlayanan', 'left');
+			$resp_waktu = $this->db->get('responden_detail');
+
+			$arr_data = array();
+			foreach ($resp_petugas->result() as $key => $value) {
+				$arr_data[$key] = array(
+					'layanan_petugas' => $value->nama_layanan,
+					'description_layanan_petugas' => $value->description_layanan_petugas,
+				);
+			}
+
+			foreach ($resp_fasilitas->result() as $key => $value) {
+				$arr_data[$key]['layanan_fasilitas'] = $value->nama_layanan;
+				$arr_data[$key]['description_layanan_fasilitas'] = $value->description_layanan_fasilitas;
+			}
+
+			foreach ($resp_prosedur->result() as $key => $value) {
+				$arr_data[$key]['layanan_prosedur'] = $value->nama_layanan;
+				$arr_data[$key]['description_layanan_prosedur'] = $value->description_layanan_prosedur;
+			}
+			
+			foreach ($resp_waktu->result() as $key => $value) {
+				$arr_data[$key]['layanan_waktu'] = $value->nama_layanan;
+				$arr_data[$key]['description_layanan_waktu'] = $value->description_layanan_waktu;
+			}
+
+			// echo "<pre>"; print_r($arr_data); die();
+
 			$data['responden'] = $responden;
+			$data['arr_data'] = $arr_data;
+
 
 			$view = $this->load->view('administrator/responden/v_detail', $data, true);
 			$ret = array('success' => true, 'view' => $view);

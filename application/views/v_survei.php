@@ -32,6 +32,42 @@
         color: red;
         font-family: 'Poppins', sans-serif;
     }
+    .select2-selection__placeholder {
+        text-align: center !important;
+        width: 100%;
+    }
+    .select2-container--default .select2-selection--multiple .select2-search__field {
+        text-align: center;
+    }
+    /* .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        text-align: left;
+    } */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        text-align: left;
+    }
+
+    /* Placeholder tetap rata tengah */
+    .select2-selection__placeholder,
+    .select2-container--default .select2-selection--multiple .select2-search__field:empty {
+        text-align: center !important;
+        width: 100%;
+    }
+
+    /* Value (tag terpilih) rata kiri */
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        text-align: left !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: flex-start !important;
+        /* padding-left: 4px !important; */
+        justify-content: flex-start !important;
+        margin: 0px !important;
+    }
+
+    /* Input field saat ada value, tetap rata kiri */
+    .select2-container--default .select2-selection--multiple .select2-search__field:not(:empty) {
+        text-align: left !important;
+    }
 </style>
 
 <div class="card">
@@ -52,7 +88,8 @@
             <div class="form-group">
                 <label class="control-label col-md-4">No. RM Pasien <red>*</red></label>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien"/>
+                    <!-- <input type="text" class="form-control" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien"/> -->
+                    <input type="text" class="form-control" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien" inputmode="numeric" pattern="\d{8}" maxlength="8" minlength="8" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8);" />
                 </div>
             </div>
             <div class="form-group">
@@ -116,11 +153,11 @@
                         <div class="survey-row">
                             <div class="survey-col label">Petugas <br><small>(Keramahan, Sikap, Penampilan)</small></div>
                             <div class="survey-col">
-                                <select class="form-control select2" id="idlayanan_petugas" name="idlayanan_petugas" style="width: 100%;">
-                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                <select class="form-control select2" id="idlayanan_petugas" name="idlayanan_petugas[]" style="width: 100%;" multiple>
+                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
-                                        foreach ($ruangan->result() as $key => $value) {
-                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        foreach ($layanan->result() as $key => $value) {
+                                            echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
                                         }
                                     ?>
                                 </select>
@@ -132,11 +169,11 @@
                         <div class="survey-row">
                             <div class="survey-col label">Fasilitas</div>
                             <div class="survey-col">
-                                <select class="form-control select2" id="idlayanan_fasilitas" name="idlayanan_fasilitas" style="width: 100%;">
-                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                <select class="form-control select2" id="idlayanan_fasilitas" name="idlayanan_fasilitas[]" style="width: 100%;" multiple>
+                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
-                                        foreach ($ruangan->result() as $key => $value) {
-                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        foreach ($layanan->result() as $key => $value) {
+                                            echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
                                         }
                                     ?>
                                 </select>
@@ -148,11 +185,11 @@
                         <div class="survey-row">
                             <div class="survey-col label">Prosedur Layanan</div>
                             <div class="survey-col">
-                                <select class="form-control select2" id="idlayanan_prosedur" name="idlayanan_prosedur" style="width: 100%;">
-                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                <select class="form-control select2" id="idlayanan_prosedur" name="idlayanan_prosedur[]" style="width: 100%;" multiple>
+                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
-                                        foreach ($ruangan->result() as $key => $value) {
-                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        foreach ($layanan->result() as $key => $value) {
+                                            echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
                                         }
                                     ?>
                                 </select>
@@ -164,11 +201,11 @@
                         <div class="survey-row">
                             <div class="survey-col label">Waktu Layanan</div>
                             <div class="survey-col">
-                                <select class="form-control select2" id="idlayanan_waktu" name="idlayanan_waktu" style="width: 100%;">
-                                    <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
+                                <select class="form-control select2" id="idlayanan_waktu" name="idlayanan_waktu[]" style="width: 100%;" multiple>
+                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
-                                        foreach ($ruangan->result() as $key => $value) {
-                                            echo "<option value='".$value->idruangan."'>".$value->nama_ruangan."</option>";
+                                        foreach ($layanan->result() as $key => $value) {
+                                            echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
                                         }
                                     ?>
                                 </select>

@@ -38,32 +38,39 @@
                 <th width="auto">Waktu Layanan</th>
                 <th width="auto">Keterangan</th>
             </tr>
-            <tr>
-                <td>
-                    <?php echo $responden->row()->petugas_nama_ruangan; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->description_petugas; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->fasilitas_nama_ruangan; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->description_fasilitas; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->prosedur_nama_ruangan; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->description_prosedur; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->waktu_nama_ruangan; ?>
-                </td>
-                <td>
-                    <?php echo $responden->row()->description_waktu; ?>
-                </td>
-            </tr>
+
+            <?php
+                foreach ($arr_data as $key => $value) {
+            ?>
+                    <tr>
+                        <td>
+                            <?php echo !empty($value['layanan_petugas']) ? $value['layanan_petugas'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['description_layanan_petugas']) ? $value['description_layanan_petugas'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['layanan_fasilitas']) ? $value['layanan_fasilitas'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['description_layanan_fasilitas']) ? $value['description_layanan_fasilitas'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['layanan_prosedur']) ? $value['layanan_prosedur'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['description_layanan_prosedur']) ? $value['description_layanan_prosedur'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['layanan_waktu']) ? $value['layanan_waktu'] : '-'; ?>
+                        </td>
+                        <td>
+                            <?php echo !empty($value['description_layanan_waktu']) ? $value['description_layanan_waktu'] : '-'; ?>
+                        </td>
+                    </tr>
+            <?php
+                }
+            ?>
         </table>
     </div>
 </div>
