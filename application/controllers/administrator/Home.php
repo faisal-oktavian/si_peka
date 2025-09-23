@@ -19,11 +19,211 @@ class Home extends AZ_Controller {
 		$this->load->helper('az_config');
 		$this->load->helper('az_core');
 
-		$view = $this->load->view('administrator/home/v_home', '', true);
+		// DIAGRAM KEPUASAN KOMPONEN
+			// Grafik Puas
+			$this->db->where('kepuasan = "puas" ');
+			$this->db->where('is_active = "1" ');
+			$this->db->join('responden_detail', 'responden_detail.idresponden = responden.idresponden');
+			$this->db->select('COUNT(idlayanan_petugas) as puas_petugas, COUNT(idlayanan_fasilitas) as puas_fasilitas, COUNT(idlayanan_prosedur) as puas_prosedur, COUNT(idlayanan_waktu) as puas_waktu');
+			$respon_puas = $this->db->get('responden');
+			// echo "<pre>"; print_r($this->db->last_query()); die();
+
+			// Grafik Tidak Puas
+			$this->db->where('kepuasan = "tidak_puas" ');
+			$this->db->where('is_active = "1" ');
+			$this->db->join('responden_detail', 'responden_detail.idresponden = responden.idresponden');
+			$this->db->select('COUNT(idlayanan_petugas) as tidak_puas_petugas, COUNT(idlayanan_fasilitas) as tidak_puas_fasilitas, COUNT(idlayanan_prosedur) as tidak_puas_prosedur, COUNT(idlayanan_waktu) as tidak_puas_waktu');
+			$respon_tidak_puas = $this->db->get('responden');
+			// echo "<pre>"; print_r($this->db->last_query()); die();
+
+
+		// DIAGRAM KEPUASAN PER KOMPONEN (UNIT)
+			// $arr_puas = array();
+			// $arr_tidak_puas = array();
+
+			// 1. Data Komponen Petugas
+				$subquery_petugas_puas = $this->db
+					->select('responden_detail.idlayanan_petugas, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_petugas')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_petugas IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'puas')
+					->group_by('responden_detail.idlayanan_petugas, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$petugas_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_petugas_puas) AS petugas_puas");
+				$petugas_puas_5 = $this->db->query("SELECT * FROM ($subquery_petugas_puas) AS petugas_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				$subquery_petugas_tidak_puas = $this->db
+					->select('responden_detail.idlayanan_petugas, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_petugas')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_petugas IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'tidak_puas')
+					->group_by('responden_detail.idlayanan_petugas, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$petugas_tidak_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_petugas_tidak_puas) AS petugas_tidak_puas");
+				$petugas_tidak_puas_5 = $this->db->query("SELECT * FROM ($subquery_petugas_tidak_puas) AS petugas_tidak_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				// $total_komponen_petugas = $petugas_puas->num_rows() + $petugas_tidak_puas->num_rows();
+
+				// $arr_puas[] = $total_komponen_petugas ? round(($petugas_puas->num_rows() / $total_komponen_petugas) * 100) : 0;
+				// $arr_tidak_puas[] = $total_komponen_petugas ? round(($petugas_tidak_puas->num_rows() / $total_komponen_petugas) * 100) : 0;
+
+			// 2. Data Komponen Fasilitas
+				$subquery_fasilitas_puas = $this->db
+					->select('responden_detail.idlayanan_fasilitas, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_fasilitas')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_fasilitas IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'puas')
+					->group_by('responden_detail.idlayanan_fasilitas, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$fasilitas_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_fasilitas_puas) AS fasilitas_puas");
+				$fasilitas_puas_5 = $this->db->query("SELECT * FROM ($subquery_fasilitas_puas) AS fasilitas_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				$subquery_fasilitas_tidak_puas = $this->db
+					->select('responden_detail.idlayanan_fasilitas, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_fasilitas')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_fasilitas IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'tidak_puas')
+					->group_by('responden_detail.idlayanan_fasilitas, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$fasilitas_tidak_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_fasilitas_tidak_puas) AS fasilitas_tidak_puas");
+				$fasilitas_tidak_puas_5 = $this->db->query("SELECT * FROM ($subquery_fasilitas_tidak_puas) AS fasilitas_tidak_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				// $total_komponen_fasilitas = $fasilitas_puas->num_rows() + $fasilitas_tidak_puas->num_rows();
+
+				// $arr_puas[] = $total_komponen_fasilitas ? round(($fasilitas_puas->num_rows() / $total_komponen_fasilitas) * 100) : 0;
+				// $arr_tidak_puas[] = $total_komponen_fasilitas ? round(($fasilitas_tidak_puas->num_rows() / $total_komponen_fasilitas) * 100) : 0;
+
+			// 3. Data Komponen Prosedur
+				$subquery_prosedur_puas = $this->db
+					->select('responden_detail.idlayanan_prosedur, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_prosedur')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_prosedur IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'puas')
+					->group_by('responden_detail.idlayanan_prosedur, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$prosedur_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_prosedur_puas) AS prosedur_puas");
+				$prosedur_puas_5 = $this->db->query("SELECT * FROM ($subquery_prosedur_puas) AS prosedur_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				$subquery_prosedur_tidak_puas = $this->db
+					->select('responden_detail.idlayanan_prosedur, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_prosedur')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_prosedur IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'tidak_puas')
+					->group_by('responden_detail.idlayanan_prosedur, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$prosedur_tidak_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_prosedur_tidak_puas) AS prosedur_tidak_puas");
+				$prosedur_tidak_puas_5 = $this->db->query("SELECT * FROM ($subquery_prosedur_tidak_puas) AS prosedur_tidak_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				// $total_komponen_prosedur = $prosedur_puas->num_rows() + $prosedur_tidak_puas->num_rows();
+
+				// $arr_puas[] = $total_komponen_prosedur ? round(($prosedur_puas->num_rows() / $total_komponen_prosedur) * 100) : 0;
+				// $arr_tidak_puas[] = $total_komponen_prosedur ? round(($prosedur_tidak_puas->num_rows() / $total_komponen_prosedur) * 100) : 0;
+			
+			// 4. Data Komponen Waktu
+				$subquery_waktu_puas = $this->db
+					->select('responden_detail.idlayanan_waktu, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_waktu')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_waktu IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'puas')
+					->group_by('responden_detail.idlayanan_waktu, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$waktu_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_waktu_puas) AS waktu_puas");
+				$waktu_puas_5 = $this->db->query("SELECT * FROM ($subquery_waktu_puas) AS waktu_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				$subquery_waktu_tidak_puas = $this->db
+					->select('responden_detail.idlayanan_waktu, nama_layanan, COUNT(*) AS jumlah', false)
+					->from('responden')
+					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
+					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_waktu')
+					->where('responden.is_active', 1)
+					->where('responden_detail.idlayanan_waktu IS NOT NULL', null, false)
+					->where('responden.kepuasan', 'tidak_puas')
+					->group_by('responden_detail.idlayanan_waktu, nama_layanan')
+					->order_by('jumlah', 'DESC')
+					->get_compiled_select(); // subquery di-compile jadi string SQL
+
+				$waktu_tidak_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_waktu_tidak_puas) AS waktu_tidak_puas");
+				$waktu_tidak_puas_5 = $this->db->query("SELECT * FROM ($subquery_waktu_tidak_puas) AS waktu_tidak_puas LIMIT 5");
+				// echo "<pre>"; print_r($this->db->last_query()); die();
+
+				// $total_komponen_waktu = $waktu_puas->num_rows() + $waktu_tidak_puas->num_rows();
+
+				// $arr_puas[] = $total_komponen_waktu ? round(($waktu_puas->num_rows() / $total_komponen_waktu) * 100) : 0;
+				// $arr_tidak_puas[] = $total_komponen_waktu ? round(($waktu_tidak_puas->num_rows() / $total_komponen_waktu) * 100) : 0;
+
+		// array data
+		$data['respon_puas'] = $respon_puas;
+		$data['respon_tidak_puas'] = $respon_tidak_puas;
+
+		// $data['arr_puas'] = $arr_puas;
+		// $data['arr_tidak_puas'] = $arr_tidak_puas;
+		$data['petugas_puas'] = $petugas_puas;
+		$data['petugas_tidak_puas'] = $petugas_tidak_puas;
+		$data['fasilitas_puas'] = $fasilitas_puas;
+		$data['fasilitas_tidak_puas'] = $fasilitas_tidak_puas;
+		$data['prosedur_puas'] = $prosedur_puas;
+		$data['prosedur_tidak_puas'] = $prosedur_tidak_puas;
+		$data['waktu_puas'] = $waktu_puas;
+		$data['waktu_tidak_puas'] = $waktu_tidak_puas;
+		
+		$data['petugas_puas_5'] = $petugas_puas_5;
+		$data['petugas_tidak_puas_5'] = $petugas_tidak_puas_5;
+		$data['fasilitas_puas_5'] = $fasilitas_puas_5;
+		$data['fasilitas_tidak_puas_5'] = $fasilitas_tidak_puas_5;
+		$data['prosedur_puas_5'] = $prosedur_puas_5;
+		$data['prosedur_tidak_puas_5'] = $prosedur_tidak_puas_5;
+		$data['waktu_puas_5'] = $waktu_puas_5;
+		$data['waktu_tidak_puas_5'] = $waktu_tidak_puas_5;
+		
+		// echo "<pre>"; print_r($data); //die();
+
+		$view = $this->load->view('administrator/home/v_home', $data, true);
 		$app->add_content($view);
 
-		$js = az_add_js('administrator/home/vjs_home');
-		$app->add_js($js);
+		// $js = az_add_js('administrator/home/vjs_home');
+		// $app->add_js($js);
 
 		echo $app->render();	
 	}
@@ -153,194 +353,5 @@ class Home extends AZ_Controller {
 			'data' => $vdata
 		);
 		echo json_encode($return);
-	}
-
-	function test_pdf() {
-		$this->load->library('Lite');
-		$this->lite->pdf(91, '', true);
-	}
-
-	function dirsize($dir) {
-	    if(is_file($dir)) return array('size'=>filesize($dir),'howmany'=>0);
-	    if($dh=opendir($dir)) {
-	        $size=0;
-	        $n = 0;
-	        while(($file=readdir($dh))!==false) {
-	            if($file=='.' || $file=='..') continue;
-	            $n++;
-	            $data = $this->dirsize($dir.'/'.$file);
-	            $size += $data['size'];
-	            $n += $data['howmany'];
-	        }
-	        closedir($dh);
-	        return array('size'=>$size,'howmany'=>$n);
-	    } 
-	    return array('size'=>0,'howmany'=>0);
-	}
-
-	function check_disk()
-	{
-		$this->load->helper('az_config');
-		
-		$file_transaction = $this->dirsize(APPPATH_FRONT.'assets/transaction_image');
-		$file_transaction_size = $file_transaction['size'];
-		
-		$member_profile = $this->dirsize(APPPATH_FRONT.'assets/member_profile');
-		$member_profile_size = $member_profile['size'];
-
-		$category = $this->dirsize(APPPATH_FRONT.'assets/product_category');
-		$category_size = $category['size'];
-
-		$slideshow = $this->dirsize(APPPATH_FRONT.'assets/slideshow');
-		$slideshow_size = $slideshow['size'];
-			
-		$product_image = $this->dirsize(APPPATH_FRONT.'assets/product_image');
-		$product_image_size = $product_image['size'];
-
-		$total_file_size = $member_profile_size + $category_size + $file_transaction_size + $slideshow_size + $product_image_size;
-
-		$data['member_profile'] = $member_profile_size;
-		$data['category'] = $category_size;
-		$data['file_transaction'] = $file_transaction_size;
-		$data['slideshow'] = $slideshow_size;
-		$data['product_image'] = $product_image_size;
-		$data['file_size'] = $total_file_size;
-
-		$db = $this->db->query("SHOW TABLE STATUS");
-		$total_db = 0;
-		foreach ($db->result() as $key => $value) {
-			$total_db += $value->Data_length + $value->Index_length;
-		}
-
-		$data['db_size'] = $total_db;
-
-		$back_file_def = $this->dirsize(DEFPATH);
-		$back_file_def_size = $back_file_def['size'];
-		$back_file = $this->dirsize(APPPATH);
-		$back_file_size = $back_file['size'];
-		$system_file = $this->dirsize(BASEPATH);
-		$system_file_size = $system_file['size'];
-
-		$front_file_def = $this->dirsize(AZPATH.'/application/liteprint/default');
-		$front_file_def_size = $front_file_def['size'];
-		
-
-		$arr_front = array('assets/benefit', 'assets/fonts', 'assets/helper', 'assets/images', 'assets/logo', 'assets/plugins', 'config', 'controllers', 'core', 'logs', 'views');
-		$front_file_size = 0;
-		foreach ($arr_front as $key => $value) {
-			$rfront_file = $this->dirsize(APPPATH_FRONT.$value);
-			$front_file_size += $rfront_file['size'];	
-		}
-
-
-		$total_file_system = $back_file_size + $front_file_size + $system_file_size;
-		$data['file_system_size'] = $total_file_system;
-
-		$app_size = az_get_config('disk_space', 'config_app');
-
-		$mtotal_file_system = floor($total_file_system / 1024 / 1024);
-		$mtotal_db = floor($total_db / 1024 / 1024);
-		$mtotal_file_size = floor($total_file_size / 1024 / 1024);
-
-		$ptotal_file_system = ($mtotal_file_system / $app_size) * 100;
-		$ptotal_db = ($mtotal_db / $app_size) * 100;
-		$ptotal_file_size = ($mtotal_file_size / $app_size) * 100;
-		$free = $app_size - ($mtotal_file_system + $mtotal_db + $mtotal_file_size);
-		$ptotal_free = ($free / $app_size) * 100;
-
-		$data['free'] = $free * 1024 * 1024;
-		$data['percent_file_system'] = $ptotal_file_system;
-		$data['percent_db'] = $ptotal_db;
-		$data['percent_file'] = $ptotal_file_size;
-		$data['percent_free'] = $ptotal_free;
-		echo json_encode($data);
-	}
-
-	function tesss() {
-		$this->load->helper('az_config');
-		$this->load->helper('liteprint_notification');
-		send_wa(61, 'wa_pay');
-	}
-
-
-	private function import_account() {
-		$this->load->library('AZApp');
-		$azapp = $this->azapp;	
-		$azapp->add_phpexcel();
-        $objPHPExcel = PHPExcel_IOFactory::load(APPPATH.'assets/import_account_2.xlsx');
-        $sheet0 = $objPHPExcel->setActiveSheetIndex(0);	
-		$i = 2;
-    	do {
-        	$a = 'A';
-        	$nama = $sheet0->getCell($a.$i)->getValue(); $a++; 
-        	$nomor = $sheet0->getCell($a.$i)->getValue(); $a++;
-        	$nama_kategori = $sheet0->getCell($a.$i)->getValue(); $a++; 
-
-
-        	$this->db->where('account_category_name', $nama_kategori);
-        	$the_nama_kategori = $this->db->get('account_category');
-        	$idaccount_category = NULL;
-        	if ($the_nama_kategori->num_rows() > 0) {
-        		$idaccount_category = $the_nama_kategori->row()->idaccount_category;
-        	}
-        	else {
-        		$arr_loc['account_category_name'] = $nama_kategori;
-        		$this->db->insert('account_category', $arr_loc);
-        		$idaccount_category = $this->db->insert_id();
-        	}
-
-        	$i++;
-
-    		if (strlen($nama) == 0) {
-    			continue;
-    		}
-
-    		$arr_data = array(
-    			'account_name' => ltrim($nama),
-    			'account_code' => $nomor,
-    			'idaccount_category' => $idaccount_category,
-    		);
-
-    		$this->db->insert('account', $arr_data);
-
-
-
-    	} while (strlen($nama) > 0);
-	}
-
-	function format_account() {
-		$this->load->library('AZApp');
-		$azapp = $this->azapp;	
-		$azapp->add_phpexcel();
-        $objPHPExcel = PHPExcel_IOFactory::load(APPPATH.'assets/import_account_2.xlsx');
-        $sheet0 = $objPHPExcel->setActiveSheetIndex(0);	
-		$i = 2;
-		$idaccount_parent = NULL;
-    	for ($inc=0; $inc < 144; $inc++) { 
-        	$a = 'A';
-        	$nama = $sheet0->getCell($a.$i)->getValue();
-
-
-        	$thename = ltrim($nama);
-    		$this->db->where('account_name', $thename);
-    		$acc = $this->db->get('account');
-    		if ($acc->num_rows() > 0) {
-    			$idaccount = $acc->row()->idaccount;
-    		}
-
-        	if (substr($nama, 0, 3) == '   ') {
-        		$arr_up = array(
-        			'idaccount_parent' => $idaccount_parent
-        		);
-        		$this->db->where('idaccount', $idaccount);
-        		$this->db->update('account', $arr_up);
-        	}
-        	else {
-        		
-        		$idaccount_parent = $idaccount;
-        	}
-
-        	$i++;
-    	}
 	}
 }
