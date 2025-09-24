@@ -47,14 +47,15 @@ class Survei extends AZ_Controller {
         $idruangan = $post['idruangan'];
         $kepuasan = $post['kepuasan'];
 
-        $idlayanan_petugas = $post['idlayanan_petugas'];
-        $description_petugas = $post['description_petugas'];
-        $idlayanan_fasilitas = $post['idlayanan_fasilitas'];
-        $description_fasilitas = $post['description_fasilitas'];
-        $idlayanan_prosedur = $post['idlayanan_prosedur'];
-        $description_prosedur = $post['description_prosedur'];
-        $idlayanan_waktu = $post['idlayanan_waktu'];
-        $description_waktu = $post['description_waktu'];
+        // Data layanan dan deskripsi sekarang akan menjadi array asosiatif
+        $idlayanan_petugas = $post['idlayanan_petugas'] ?? [];
+        $description_petugas = $post['description_petugas'] ?? []; // Ini adalah array asosiatif [id_layanan => deskripsi]
+        $idlayanan_fasilitas = $post['idlayanan_fasilitas'] ?? [];
+        $description_fasilitas = $post['description_fasilitas'] ?? [];
+        $idlayanan_prosedur = $post['idlayanan_prosedur'] ?? [];
+        $description_prosedur = $post['description_prosedur'] ?? [];
+        $idlayanan_waktu = $post['idlayanan_waktu'] ?? [];
+        $description_waktu = $post['description_waktu'] ?? [];
 
         $data_save = array(
             'nama_pasien' => $nama_pasien,
@@ -76,7 +77,7 @@ class Survei extends AZ_Controller {
                     'idresponden' => $id_responden,
                     
 					'idlayanan_petugas' => $id_layanan,
-                    'description_layanan_petugas' => $description_petugas,
+                    'description_layanan_petugas' => $description_petugas[$id_layanan] ?? null, // Ambil deskripsi berdasarkan ID
 					
 					'idlayanan_fasilitas' => null,
                     'description_layanan_fasilitas' => null,
@@ -99,7 +100,7 @@ class Survei extends AZ_Controller {
                     'description_layanan_petugas' => null,
 					
 					'idlayanan_fasilitas' => $id_layanan,
-                    'description_layanan_fasilitas' => $description_fasilitas,
+                    'description_layanan_fasilitas' => $description_fasilitas[$id_layanan] ?? null,
 					
 					'idlayanan_prosedur' => null,
                     'description_layanan_prosedur' => null,
@@ -122,7 +123,7 @@ class Survei extends AZ_Controller {
                     'description_layanan_fasilitas' => null,
 					
 					'idlayanan_prosedur' => $id_layanan,
-                    'description_layanan_prosedur' => $description_prosedur,
+                    'description_layanan_prosedur' => $description_prosedur[$id_layanan] ?? null,
 					
 					'idlayanan_waktu' => null,
                     'description_layanan_waktu' => null,
@@ -145,7 +146,7 @@ class Survei extends AZ_Controller {
                     'description_layanan_prosedur' => null,
 
                     'idlayanan_waktu' => $id_layanan,
-                    'description_layanan_waktu' => $description_waktu,
+                    'description_layanan_waktu' => $description_waktu[$id_layanan] ?? null,
                 );
             }
         }

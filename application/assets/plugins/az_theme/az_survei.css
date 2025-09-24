@@ -5,7 +5,7 @@
     border-radius: 20px;
     padding: 30px;
     max-width: 700px;
-    width: 90%;
+    width: 100%;
     text-align: center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     animation: fadeIn 1.2s ease-in-out;
@@ -142,7 +142,7 @@ p {
 .survey-row {
     display: grid;
     /* grid-template-columns: 1fr 1fr 1fr; */
-    grid-template-columns: 170px 1fr 290px;
+    grid-template-columns: 170px 1fr 400px;
     gap: 10px;
     align-items: center;
 }
