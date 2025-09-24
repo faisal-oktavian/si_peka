@@ -187,6 +187,35 @@ p {
     pointer-events: auto;
 }
 
+/* Tambahan CSS untuk tampilan dinamis */
+.survey-col.description-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Jarak antar input deskripsi */
+    margin-top: 10px;
+}
+.description-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.description-item label {
+    flex-shrink: 0; /* Agar label tidak menyusut */
+    width: 100px; /* Lebar tetap untuk label layanan */
+    text-align: right;
+    margin-right: 5px;
+}
+.description-item input {
+    flex-grow: 1; /* Input mengisi sisa ruang */
+}
+.invalid-feedback-dynamic {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+    display: block;
+    width: 100%;
+}
+
 
 /* animation */
 @keyframes fadeIn {

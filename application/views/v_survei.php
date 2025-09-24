@@ -32,27 +32,13 @@
         color: red;
         font-family: 'Poppins', sans-serif;
     }
-    /* .card{
-        max-width: 850px !important;
-    } */
-    /* .select2-selection__placeholder {
-        text-align: center !important;
-        width: 100%;
-    }
-    .select2-container--default .select2-selection--multiple .select2-search__field {
-        text-align: center;
-    }
-    /* .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-        text-align: left;
-    } */
     
-
+    
     /* Placeholder tetap rata tengah & value (tag terpilih) rata kiri*/   
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         text-align: left;
     }
-    .select2-selection__placeholder,
-    .select2-container--default .select2-selection--multiple .select2-search__field:empty {
+    .select2-selection__placeholder, .select2-container--default .select2-selection--multiple .select2-search__field:empty {
         text-align: center !important;
         width: 100%;
     }
@@ -68,35 +54,6 @@
     .select2-container--default .select2-selection--multiple .select2-search__field:not(:empty) {
         text-align: left !important;
     }
-
-    /* Tambahan CSS untuk tampilan dinamis */
-    .survey-col.description-input-container {
-        display: flex;
-        flex-direction: column;
-        gap: 5px; /* Jarak antar input deskripsi */
-        margin-top: 10px;
-    }
-    .description-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .description-item label {
-        flex-shrink: 0; /* Agar label tidak menyusut */
-        width: 100px; /* Lebar tetap untuk label layanan */
-        text-align: right;
-        margin-right: 5px;
-    }
-    .description-item input {
-        flex-grow: 1; /* Input mengisi sisa ruang */
-    }
-    .invalid-feedback-dynamic {
-        color: red;
-        font-size: 0.875em;
-        margin-top: 0.25rem;
-        display: block;
-        width: 100%;
-    }
 </style>
 
 <div class="card">
@@ -106,7 +63,7 @@
     <div>
         <p style="font-size: 25px; font-weight:bold; text-align:center;">Survei Kepuasan Pasien</p>
 
-        <!-- form input pasien -->
+        <!-- fStep 1: Form input pasien -->
         <form class="form-horizontal az-form" id="form-step1" name="form" method="POST">
             <div class="form-group">
                 <label class="control-label col-md-4">Nama Pasien <red>*</red></label>
@@ -117,7 +74,6 @@
             <div class="form-group">
                 <label class="control-label col-md-4">No. RM Pasien <red>*</red></label>
                 <div class="col-md-5">
-                    <!-- <input type="text" class="form-control" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien"/> -->
                     <input type="text" class="form-control" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien" inputmode="numeric" pattern="\d{8}" maxlength="8" minlength="8" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8);" />
                 </div>
             </div>
@@ -177,6 +133,7 @@
                     <h2>Ijinkan Kami Berbenah</h2>
                     <p>Layanan Apa yang Membuat Anda Tidak Puas?</p>
                 </div>
+
                 <div style="margin:15px 0;">
                     <div class="survey-table">
                         <!-- Petugas -->
@@ -203,7 +160,6 @@
                             <div class="survey-col label">Fasilitas</div>
                             <div class="survey-col">
                                 <select class="form-control select2" id="idlayanan_fasilitas" name="idlayanan_fasilitas[]" style="width: 100%;" multiple>
-                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
                                         foreach ($layanan->result() as $key => $value) {
                                             echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
@@ -212,7 +168,6 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <!-- <input type="text" class="form-control" id="description_fasilitas" name="description_fasilitas"/> -->
                                 <div id="description_fasilitas_container" class="description-input-container">
                                     <!-- Input deskripsi dinamis akan ditambahkan di sini oleh JS -->
                                 </div>
@@ -224,7 +179,6 @@
                             <div class="survey-col label">Prosedur Layanan</div>
                             <div class="survey-col">
                                 <select class="form-control select2" id="idlayanan_prosedur" name="idlayanan_prosedur[]" style="width: 100%;" multiple>
-                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
                                         foreach ($layanan->result() as $key => $value) {
                                             echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
@@ -233,7 +187,6 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <!-- <input type="text" class="form-control" id="description_prosedur" name="description_prosedur"/> -->
                                 <div id="description_prosedur_container" class="description-input-container">
                                     <!-- Input deskripsi dinamis akan ditambahkan di sini oleh JS -->
                                 </div>
@@ -245,7 +198,6 @@
                             <div class="survey-col label">Waktu Layanan</div>
                             <div class="survey-col">
                                 <select class="form-control select2" id="idlayanan_waktu" name="idlayanan_waktu[]" style="width: 100%;" multiple>
-                                    <!-- <option value="" selected disabled hidden> -- Pilih Layanan -- </option> -->
                                     <?php 
                                         foreach ($layanan->result() as $key => $value) {
                                             echo "<option value='".$value->idlayanan."'>".$value->nama_layanan."</option>";
@@ -254,7 +206,6 @@
                                 </select>
                             </div>
                             <div class="survey-col">
-                                <!-- <input type="text" class="form-control" id="description_waktu" name="description_waktu"/> -->
                                 <div id="description_waktu_container" class="description-input-container">
                                     <!-- Input deskripsi dinamis akan ditambahkan di sini oleh JS -->
                                 </div>
@@ -263,6 +214,7 @@
                     </div>
                 </div>
             </div>
+
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                 <button type="button" class="btn-back" id="btn-prev-3" style="background:#6c757d;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
                 <button type="submit" class="btn-next">Kirim <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
