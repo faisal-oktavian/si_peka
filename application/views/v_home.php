@@ -23,7 +23,30 @@
         box-shadow: 0 8px 32px 10px rgba(0,0,0,0.35);
         transform: translateY(-4px) scale(1.01);
     }
+
+    .corner-logo {
+        position: absolute;
+        top: 20px;
+        z-index: 2;
+        width: 140px;
+        height: auto;
+    }
+
+    .corner-logo.left {
+        left: 20px;
+    }
+
+    .corner-logo.right {
+        right: 20px;
+        width: 110px;
+    }
 </style>
+
+<!-- Logo pojok kiri -->
+<img src="<?php echo base_url('application/assets/logo/rssg.png'); ?>" alt="Logo Kiri" class="corner-logo left">
+
+<!-- Logo pojok kanan -->
+<img src="<?php echo base_url('application/assets/logo/logo_si_peka_box_rounded.png'); ?>" alt="Logo Kanan" class="corner-logo right">
 
 <div class="card">
     <div class="survey-top-title">
