@@ -62,6 +62,19 @@ $config['menu'] = array(
         ),
     ),
     array(
+        "name" => "report",
+        "title" => "Laporan",
+        "url" => "report",
+        "icon" => "file",
+        "submenu" => array(),
+        'role' => array(
+            array(
+                'role_name' => 'role_report_survei',
+                'role_title' => 'Laporan Survei',
+            ),
+        ),
+    ),
+    array(
         "name" => "user",
         "title" => azlang("User"),
         "icon" => "user",
