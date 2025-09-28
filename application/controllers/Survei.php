@@ -163,7 +163,7 @@ class Survei extends AZ_Controller {
         } 
 		else {
             $this->db->trans_commit();
-            $err_message = "Terima kasih atas partisipasi Anda mengisi survei kepuasan pasien.";
+            $err_message = "Terima kasih atas saran dan masukan bagi RSUD Sumberglagah Salam sehat.";
         }
 
         $response = array(
