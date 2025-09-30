@@ -2,7 +2,7 @@
     // Inisialisasi Select2
     $('#idruangan').select2({
         placeholder: "-- Pilih Ruang --",
-        allowClear: false
+        allowClear: true
     });
     
     // Fungsi untuk inisialisasi Select2 untuk layanan
@@ -280,6 +280,8 @@
 
         // Ubah CSS card menjadi lebih lebar saat Step 3 terbuka
         $('.card').css('max-width', '850px');
+        $('.card').css('margin-top', '150px');
+        $('.card').css('margin-bottom', '80px');
     });
 
     // Step 3 -> Submit

@@ -54,7 +54,19 @@
     .select2-container--default .select2-selection--multiple .select2-search__field:not(:empty) {
         text-align: left !important;
     }
+    .select2-selection__rendered {
+        padding-right: 0px !important;
+    }
 </style>
+
+<!-- Gradient full layar -->
+<div class="gradient-overlay"></div>
+
+<!-- Logo pojok kiri -->
+<img src="<?php echo base_url('application/assets/logo/rssg.png'); ?>" alt="Logo Kiri" class="corner-logo left">
+
+<!-- Logo pojok kanan -->
+<img src="<?php echo base_url('application/assets/logo/logo_si_peka_box_rounded.png'); ?>" alt="Logo Kanan" class="corner-logo right">
 
 <div class="card">
     <div class="survey-top-title">
@@ -68,7 +80,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">Nama Pasien <red>*</red></label>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" id="nama_pasien" name="nama_pasien" placeholder="Masukkan nama pasien"/>
+                    <input type="text" class="form-control" id="nama_pasien" name="nama_pasien" placeholder="Masukkan nama pasien" maxlength="60"/>
                 </div>
             </div>
             <div class="form-group">
@@ -115,8 +127,11 @@
                 <input type="hidden" name="kepuasan" id="kepuasan">
             </div>
 
-            <div class="nav-btn-wrapper">
-                <button type="button" class="btn-back" id="btn-prev-2"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
+            <!-- <div class="nav-btn-wrapper"> -->
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <!-- <button type="button" class="btn-back" id="btn-prev-2"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button> -->
+                <button type="button" class="btn-back" id="btn-prev-2" style="background:#6c757d;"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
+
                 <button type="button" class="btn-next" id="btn-next-2" disabled>Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
             </div>
         </form>

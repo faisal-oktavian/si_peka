@@ -216,6 +216,25 @@ p {
     width: 100%;
 }
 
+/* logo rs dan si peka */
+.corner-logo {
+    position: absolute;
+    top: 20px;
+    z-index: 99; /* lebih besar dari card */
+    width: 140px;
+    max-width: 120px; /* biar lebih responsive */
+    height: auto;
+}
+
+.corner-logo.left {
+    left: 20px;
+}
+
+.corner-logo.right {
+    right: 20px;
+    width: 110px;
+}
+
 
 /* animation */
 @keyframes fadeIn {
@@ -251,16 +270,30 @@ p {
         padding: 24px 10vw;
     }
 }
+@media (max-width: 992px) {
+    .corner-logo {
+        max-width: 18vw;
+        top: 15px;
+    }
+}
 @media (max-width: 900px) {
     .card {
         max-width: 95vw;
         padding: 24px 10vw;
     }
 }
+@media (max-width: 839px) {
+    .gradient-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 80%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+        z-index: 5; /* di atas overlay gelap */
+    }
+}
 @media (max-width: 768px) {
     .survey-row {
-    grid-template-columns: 1fr;
-    margin-top: 15px;
+        grid-template-columns: 1fr;
+        margin-top: 15px;
     }
 }
 @media (max-width: 600px) {
@@ -294,17 +327,21 @@ p {
 }
 @media (max-width: 576px) {
     .kepuasan-wrapper {
-    gap: 15px;
+        gap: 15px;
     }
 
     .btn-kepuasan img {
-    width: 60px;
+        width: 60px;
+    }
+    .corner-logo {
+        max-width: 70px; /* perkecil ukuran */
+        top: 10px;
     }
 }
 @media (max-width: 400px) {
     .card {
         margin-top: 50px;
-        padding: 10px 2px;
+        padding: 10px 10px;
     }
     h1 { 
         font-size: 1rem; 

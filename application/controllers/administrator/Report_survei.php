@@ -167,16 +167,37 @@ class Report_survei extends CI_Controller {
 			}
 
 			foreach ($resp_fasilitas->result() as $fas_key => $fas_value) {
+				$arr_data[$key][$fas_key]['idresponden'] = $value->idresponden;
+				$arr_data[$key][$fas_key]['tanggal_input'] = $value->txt_tanggal_input;
+				$arr_data[$key][$fas_key]['no_rm'] = $value->no_rm;
+				$arr_data[$key][$fas_key]['nama_pasien'] = $value->nama_pasien;
+				$arr_data[$key][$fas_key]['nama_ruangan'] = $value->nama_ruangan;
+				$arr_data[$key][$fas_key]['kepuasan'] = $value->kepuasan;
+				
 				$arr_data[$key][$fas_key]['layanan_fasilitas'] = $fas_value->nama_layanan;
 				$arr_data[$key][$fas_key]['description_layanan_fasilitas'] = $fas_value->description_layanan_fasilitas;
 			}
 
 			foreach ($resp_prosedur->result() as $pro_key => $pro_value) {
+				$arr_data[$key][$pro_key]['idresponden'] = $value->idresponden;
+				$arr_data[$key][$pro_key]['tanggal_input'] = $value->txt_tanggal_input;
+				$arr_data[$key][$pro_key]['no_rm'] = $value->no_rm;
+				$arr_data[$key][$pro_key]['nama_pasien'] = $value->nama_pasien;
+				$arr_data[$key][$pro_key]['nama_ruangan'] = $value->nama_ruangan;
+				$arr_data[$key][$pro_key]['kepuasan'] = $value->kepuasan;
+
 				$arr_data[$key][$pro_key]['layanan_prosedur'] = $pro_value->nama_layanan;
 				$arr_data[$key][$pro_key]['description_layanan_prosedur'] = $pro_value->description_layanan_prosedur;
 			}
 			
 			foreach ($resp_waktu->result() as $wak_key => $wak_value) {
+				$arr_data[$key][$wak_key]['idresponden'] = $value->idresponden;
+				$arr_data[$key][$wak_key]['tanggal_input'] = $value->txt_tanggal_input;
+				$arr_data[$key][$wak_key]['no_rm'] = $value->no_rm;
+				$arr_data[$key][$wak_key]['nama_pasien'] = $value->nama_pasien;
+				$arr_data[$key][$wak_key]['nama_ruangan'] = $value->nama_ruangan;
+				$arr_data[$key][$wak_key]['kepuasan'] = $value->kepuasan;
+				
 				$arr_data[$key][$wak_key]['layanan_waktu'] = $wak_value->nama_layanan;
 				$arr_data[$key][$wak_key]['description_layanan_waktu'] = $wak_value->description_layanan_waktu;
 			}
