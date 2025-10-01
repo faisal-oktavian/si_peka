@@ -280,8 +280,9 @@
 
         // Ubah CSS card menjadi lebih lebar saat Step 3 terbuka
         $('.card').css('max-width', '850px');
-        $('.card').css('margin-top', '150px');
-        $('.card').css('margin-bottom', '80px');
+        // $('.card').css('margin-top', '150px');
+        // $('.card').css('margin-bottom', '80px');
+        $('body').css('height', '130vh');
     });
 
     // Step 3 -> Submit
@@ -492,4 +493,5 @@
 
         // Ubah CSS card menjadi lebih kecil saat selain Step 3 terbuka
         $('.card').css('max-width', '700px');
+        $('body').css('height', '100vh');
     });

@@ -105,7 +105,8 @@ class Report_survei extends CI_Controller {
 
         // testing
         // $this->db->where('no_rm IN  ("25149125", "14222125") ');
-        
+
+		$arr_data = array();
         
         $this->db->where('date(responden.tanggal_input) >= "'.Date('Y-m-d', strtotime($date1)).'"');
         $this->db->where('date(responden.tanggal_input) <= "'.Date('Y-m-d', strtotime($date2)).'"');
