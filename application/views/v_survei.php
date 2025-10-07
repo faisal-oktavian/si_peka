@@ -57,6 +57,44 @@
     .select2-selection__rendered {
         padding-right: 0px !important;
     }
+
+
+
+
+#selfie-section {
+  text-align: center;
+}
+
+#selfie-section video {
+  /* display: block; */
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+#selfie-section .btn-group {
+  margin-top: 8px;
+}
+
+#selfie-section img, 
+#selfie-section video {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+#thumb {
+    width: 160px; 
+    height: 120px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+    border: 2px solid #ccc; 
+    display: none; 
+    margin-bottom: 8px;
+}
+#video {
+    width: 160px; 
+    height: 120px; 
+    border-radius: 8px; 
+    display: none; 
+    margin: 0 auto;
+}
 </style>
 
 <!-- Gradient full layar -->
@@ -79,19 +117,19 @@
         <form class="form-horizontal az-form" id="form-step1" name="form" method="POST">
             <div class="form-group">
                 <label class="control-label col-md-4">Nama Pasien <red>*</red></label>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <input type="text" class="form-control" id="nama_pasien" name="nama_pasien" placeholder="Masukkan nama pasien" maxlength="60"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">No. RM Pasien <red>*</red></label>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <input type="text" class="form-control" id="no_rm" name="no_rm" placeholder="Masukkan nomor RM pasien" inputmode="numeric" pattern="\d{8}" maxlength="8" minlength="8" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8);" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">Ruang <red>*</red></label>
-                <div class="col-md-5">
+                <div class="col-md-6">
                     <select class="form-control select2" id="idruangan" name="idruangan" style="width: 100%;">
                         <option value="" selected disabled hidden> -- Pilih Ruang -- </option>
                         <?php 
@@ -102,6 +140,29 @@
                     </select>
                 </div>
             </div>
+            
+            <!-- OTP Email Pasien -->
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-6">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="email" id="email" name="email" placeholder="Masukkan Email Anda" 
+                            class="form-control"    >
+                        <button type="button" id="btnSendOTP" class="btn btn-primary">Kirim OTP</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-6">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="otp" name="otp" placeholder="Masukkan Kode OTP" class="form-control">
+                        <button type="button" id="btnVerifyOTP" class="btn btn-success">Verifikasi OTP</button>
+                    </div>
+                </div>
+            </div>            
+            <!-- END OTP Email Pasien -->
+
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                 <button type="button" class="btn-back" style="background:#6c757d;" onclick="window.location.href='<?php echo site_url(""); ?>'"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>
                 <button type="button" class="btn-next" id="btn-next-1">Selanjutnya <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
@@ -226,6 +287,40 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Selfie -->
+                        <div class="hide">
+                            <div id="selfie-section" class="mt-3 text-center">
+                                <label class="font-weight-bold d-block mb-2">Verifisi Wajah</label>
+
+                                <div class="d-flex flex-column align-items-center">
+                                    <!-- Area Preview -->
+                                    <div class="position-relative d-flex flex-column align-items-center">
+                                        <div>
+                                            <img id="thumb" src="" alt="Preview Selfie">
+                                        </div>
+
+                                        <video id="video" autoplay></video>
+
+                                        <!-- Tombol aksi tepat di bawah preview -->
+                                        <div class="btn-group mt-2" style="justify-content:center;">
+                                            <button type="button" id="btnStartCamera" class="btn btn-primary btn-sm btn-outline-primary">Kamera</button>
+                                            <button type="button" id="btnCapture" class="btn btn-sm btn-success" style="display:none;">📸 Ambil</button>
+                                            <button type="button" id="btnStopCamera" class="btn btn-sm btn-outline-secondary" style="display:none;">Tutup</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Atau pilih file -->
+                                    <!-- <div class="mt-2">
+                                        <small class="text-muted d-block mb-1">atau unggah foto dari galeri:</small>
+                                        <input type="file" id="selfie_file" accept="image/*" class="form-control form-control-sm" style="width: 200px;">
+                                    </div> -->
+                                </div>
+
+                                <!-- Hidden input untuk menyimpan path hasil upload -->
+                                <input type="hidden" id="selfie_path" name="selfie_path" value="">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -235,6 +330,60 @@
                 <button type="submit" class="btn-next">Kirim <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
             </div>
         </form>
-
+        
+        <!-- Hidden input untuk device_id + meta -->
+        <!-- <input type="hidden" name="device_id" id="device_id">
+        <input type="hidden" name="device_meta" id="device_meta"> -->
     </div>
 </div>
+
+<!-- <script>
+    // UUID generator
+    function uuidv4(){ 
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+            var r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);
+            return v.toString(16);
+        }); 
+    }
+
+    function getCookie(name){
+        const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');
+        return m?decodeURIComponent(m[2]):null;
+    }
+
+    function setCookie(name,value,days){
+        let expires='';
+        if (days){
+            const d=new Date();d.setTime(d.getTime()+days*24*60*60*1000);expires='; expires='+d.toUTCString();
+        }
+        document.cookie=name+'='+encodeURIComponent(value)+expires+'; path=/';
+    }
+
+    function getDeviceId(){
+        let id=null;
+        try{id=localStorage.getItem('device_id');}catch(e){}
+        if (!id) id=getCookie('device_id');
+        if(!id){
+            id=uuidv4();
+            try{
+                localStorage.setItem('device_id',id);
+            }
+            catch(e){}
+            setCookie('device_id',id,365);
+        }
+        return id;
+    }
+
+    (function(){
+        const deviceId=getDeviceId();
+        document.getElementById('device_id').value=deviceId;
+
+        const meta={
+            ua:navigator.userAgent||'',
+            screen_w:screen.width||'',
+            screen_h:screen.height||'',
+            dpr:window.devicePixelRatio||1
+        };
+        document.getElementById('device_meta').value=btoa(unescape(encodeURIComponent(JSON.stringify(meta))));
+    })();
+</script> -->

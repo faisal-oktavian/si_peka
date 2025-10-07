@@ -34,6 +34,9 @@ $config['theme_front'] = 'azcmsdefault';
 
 $config['google_key'] = '6LdowLYUAAAAAHsQYD-61Pzg_560xW3Se3rEJzZJ';
 $config['google_secret'] = '6LdowLYUAAAAAEwIa1rPAukXm5KsISbMlgLsreVe';
+
+
+// $config['hmac_key'] = 'mySuperSecretKey!@#123';
 /*
 |--------------------------------------------------------------------------
 | Index File

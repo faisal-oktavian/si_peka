@@ -1,4 +1,6 @@
 <script>
+    var base_url = "<?php echo base_url(''); ?>";
+
     // Inisialisasi Select2
     $('#idruangan').select2({
         placeholder: "-- Pilih Ruang --",
@@ -168,6 +170,110 @@
         }
     });
 
+    // OTP Email Pasien
+    let resendTimeout = false;
+    let surveyStartTime = new Date(); // waktu survei dimulai
+    let verifOTP = false;
+
+    $('#otp, #email').on('input', function() {
+        verifOTP = false;
+    });
+
+    $('#btnSendOTP').on('click', function() {
+        if (resendTimeout) {
+            alert('Silakan tunggu 1 menit untuk kirim ulang OTP.');
+            return;
+        }
+
+        show_loading();
+        var input_email = $('#email').val();
+
+        setTimeout(function () {
+            send_otp(input_email);
+        }, 1000);
+    });
+
+    function send_otp(input_email) {
+        $.post(base_url + 'survei/send_otp', { 
+            email: input_email 
+        }, function(res) {
+            let data = JSON.parse(res);
+            hide_loading();
+
+            if (data.status) {
+                Swal.fire({
+                    icon: 'success',
+                    // title: 'Terima kasih!',
+                    text: data.message,
+                    customClass: {
+                        popup: 'swal2-large'
+                    }
+                }).then(() => {
+                    // code
+                });
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    // title: 'Gagal',
+                    text: data.message || 'Terjadi kesalahan saat menyimpan data.',
+                    customClass: {
+                        popup: 'swal2-large'
+                    }
+                });
+            }
+
+            if (data.status) {
+                resendTimeout = true;
+                setTimeout(() => resendTimeout = false, 60000); // 1 menit
+            }
+        });
+    }
+
+    $('#btnVerifyOTP').on('click', function() {
+        show_loading();
+
+        setTimeout(function () {
+            verify_otp();
+        }, 1000);
+    });
+
+    function verify_otp() {
+        $.post(base_url + 'survei/verify_otp', { 
+            email: $('#email').val(), 
+            otp: $('#otp').val() 
+        }, function(res) {
+            let data = JSON.parse(res);
+            hide_loading();
+
+            if (data.status) {
+                Swal.fire({
+                    icon: 'success',
+                    // title: 'Terima kasih!',
+                    text: data.message,
+                    customClass: {
+                        popup: 'swal2-large'
+                    }
+                }).then(() => {
+                    verifOTP = true;
+                });
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    // title: 'Gagal',
+                    text: data.message || 'Terjadi kesalahan saat menyimpan data.',
+                    customClass: {
+                        popup: 'swal2-large'
+                    }
+                }).then(() => {
+                    verifOTP = false;
+                });
+            }
+        });
+    }
+    // END OTP Email Pasien
+
     // Step 1 -> Step 2
     $('#btn-next-1').on('click', function(e) {
         e.preventDefault();
@@ -179,6 +285,7 @@
         formData.nama_pasien = $('#nama_pasien').val();
         formData.no_rm = $('#no_rm').val();
         formData.idruangan = $('#idruangan').val();
+        formData.email = $('#email').val();
 
         // form validasi
         if (!formData.nama_pasien) {
@@ -207,6 +314,19 @@
         
         if (!valid) {
             $('.is-invalid:first').focus();
+            return;
+        }
+
+        if (!verifOTP) {
+            Swal.fire({
+                icon: 'error',
+                // title: 'Gagal',
+                text: 'Email belum diverifikasi.',
+                customClass: {
+                    popup: 'swal2-large'
+                }
+            });
+
             return;
         }
 
@@ -282,7 +402,9 @@
         $('.card').css('max-width', '850px');
         // $('.card').css('margin-top', '150px');
         // $('.card').css('margin-bottom', '80px');
-        $('body').css('height', '130vh');
+        if (window.matchMedia("(max-width: 400px)").matches) {
+            $('body').css('height', '130vh');
+        }
     });
 
     // Step 3 -> Submit
@@ -290,6 +412,10 @@
         e.preventDefault();
         let valid = true;
         let firstInvalidInput = null;
+
+        // formData.device_id = $('#device_id').val();
+        // formData.device_meta = $('#device_meta').val();
+        formData.start_time_survei = surveyStartTime.toISOString();
 
         // Reset semua error sebelumnya
         $('.is-invalid').removeClass('is-invalid');
@@ -420,7 +546,11 @@
                 idlayanan_prosedur: formData.idlayanan_prosedur,
                 description_prosedur: formData.description_prosedur,
                 idlayanan_waktu: formData.idlayanan_waktu,
-                description_waktu: formData.description_waktu
+                description_waktu: formData.description_waktu,
+                // device_id: formData.device_id,
+                // device_meta: formData.device_meta,
+                start_time_survei: formData.start_time_survei,
+                email: formData.email,
             },
             dataType: "json",
             success: function(res) {
@@ -493,5 +623,142 @@
 
         // Ubah CSS card menjadi lebih kecil saat selain Step 3 terbuka
         $('.card').css('max-width', '700px');
-        $('body').css('height', '100vh');
+
+        if (window.matchMedia("(max-width: 400px)").matches) {
+            $('body').css('height', '100vh');
+        }
     });
+
+    function show_loading() {
+        Swal.fire({
+            title: 'Mohon tunggu...',
+            text: 'Sedang memproses data',
+            allowOutsideClick: false,
+            customClass: {
+                popup: 'swal2-large'
+            },
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
+    function hide_loading() {
+        Swal.close();
+    }
+
+    // Selfie
+    let streamRef = null;
+    const video = document.getElementById('video');
+    const btnStart = document.getElementById('btnStartCamera');
+    const btnCapture = document.getElementById('btnCapture');
+    const btnStop = document.getElementById('btnStopCamera');
+    const thumb = document.getElementById('thumb');
+    const fileInput = document.getElementById('selfie_file');
+    const selfiePath = document.getElementById('selfie_path');
+    const canvas = document.createElement('canvas');
+
+    btnStart.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            streamRef = stream;
+
+            // tampilkan video & tombol capture
+            video.style.display = 'block';
+            btnCapture.style.display = 'inline-block';
+            btnStop.style.display = 'inline-block';
+            btnStart.style.display = 'none';
+            thumb.style.display = 'none';
+        } catch (e) {
+            alert('Kamera tidak dapat diakses: ' + e.message);
+        }
+    });
+
+    btnStop.addEventListener('click', () => {
+        if (streamRef) {
+            streamRef.getTracks().forEach(t => t.stop());
+            streamRef = null;
+        }
+        video.style.display = 'none';
+        btnCapture.style.display = 'none';
+        btnStop.style.display = 'none';
+        btnStart.style.display = 'inline-block';
+    });
+
+    btnCapture.addEventListener('click', () => {
+        let canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const vw = video.videoWidth;
+        const vh = video.videoHeight;
+        const size = 400;
+        canvas.width = size;
+        canvas.height = size;
+        ctx.drawImage(video, 0, 0, size, size);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        thumb.src = dataUrl;
+        thumb.style.display = 'inline-block';
+
+        // console.log('Base64 length:', dataUrl.length);
+        // console.log('Base64 prefix:', dataUrl.substring(0, 30));
+
+        // Kirim ke server
+        uploadSelfie(dataUrl);
+
+        // Tutup kamera otomatis
+        btnStop.click();
+    });
+
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File terlalu besar (maks. 5MB)');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            thumb.src = e.target.result;
+            thumb.style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+
+        const fd = new FormData();
+        fd.append('selfie_file', file);
+
+        $.ajax({
+            url: base_url + 'survei/upload_selfie',
+            type: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(res) {
+                if (res.status) {
+                    selfiePath.value = res.path;
+                } 
+                else {
+                    alert('Gagal upload: ' + res.message);
+                }
+            }
+        });
+    });
+
+    function uploadSelfie(dataUrl) {
+        $.post(base_url + 'survei/upload_selfie', { selfie_data: dataUrl }, function(res) {
+            try {
+                const data = JSON.parse(res);
+                if (data.status) {
+                    selfiePath.value = data.path;
+                } 
+                else {
+                    alert('Gagal upload: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
