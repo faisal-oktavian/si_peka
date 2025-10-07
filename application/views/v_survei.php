@@ -249,7 +249,7 @@
 
                         <!-- Prosedur -->
                         <div class="survey-row">
-                            <div class="survey-col label">Prosedur Layanan</div>
+                            <div class="survey-col label">Prosedur Layanan <br><small>(Proses Pelayanan)</small></div>
                             <div class="survey-col">
                                 <select class="form-control select2" id="idlayanan_prosedur" name="idlayanan_prosedur[]" style="width: 100%;" multiple>
                                     <?php 
@@ -268,7 +268,7 @@
 
                         <!-- Layanan -->
                         <div class="survey-row">
-                            <div class="survey-col label">Waktu Layanan</div>
+                            <div class="survey-col label">Waktu Layanan <br><small>(Kecepatan Layanan)</small></div>
                             <div class="survey-col">
                                 <select class="form-control select2" id="idlayanan_waktu" name="idlayanan_waktu[]" style="width: 100%;" multiple>
                                     <?php 
