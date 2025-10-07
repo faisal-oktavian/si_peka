@@ -408,14 +408,25 @@
     });
 
     // Step 3 -> Submit
+    let lastAjaxController = null; // untuk menyimpan request terakhir
     $('#form-step3').on('submit', function(e) {
         e.preventDefault();
+
+        // Kalau ada request sebelumnya, batalkan
+        if (lastAjaxController) {
+            lastAjaxController.abort();
+        }
+
+        // Buat controller baru untuk request saat ini
+        lastAjaxController = new AbortController();
+        const signal = lastAjaxController.signal;
+        
         let valid = true;
         let firstInvalidInput = null;
 
         // formData.device_id = $('#device_id').val();
         // formData.device_meta = $('#device_meta').val();
-        formData.start_time_survei = surveyStartTime.toISOString();
+        // formData.start_time_survei = surveyStartTime.toISOString();
 
         // Reset semua error sebelumnya
         $('.is-invalid').removeClass('is-invalid');
@@ -531,64 +542,78 @@
         }
 
         // Kirim data ke server via AJAX
-        $.ajax({
-            url: "<?php echo site_url('survei/save'); ?>",
-            type: "POST",
-            data: {
-                nama_pasien: formData.nama_pasien,
-                no_rm: formData.no_rm,
-                idruangan: formData.idruangan,
-                kepuasan: formData.kepuasan,
-                idlayanan_petugas: formData.idlayanan_petugas,
-                description_petugas: formData.description_petugas, // Ini akan menjadi objek {id: deskripsi}
-                idlayanan_fasilitas: formData.idlayanan_fasilitas,
-                description_fasilitas: formData.description_fasilitas,
-                idlayanan_prosedur: formData.idlayanan_prosedur,
-                description_prosedur: formData.description_prosedur,
-                idlayanan_waktu: formData.idlayanan_waktu,
-                description_waktu: formData.description_waktu,
-                // device_id: formData.device_id,
-                // device_meta: formData.device_meta,
-                start_time_survei: formData.start_time_survei,
-                // email: formData.email,
-            },
-            dataType: "json",
-            success: function(res) {
-                if (res.err_code == 0) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Terima kasih!',
-                        text: res.err_message,
-                        customClass: {
-                            popup: 'swal2-large'
-                        }
-                    }).then(() => {
-                        window.location.href = "<?php echo base_url(); ?>";
-                    });
-                }
-                else {
+        show_loading();
+        setTimeout(function () {
+            $.ajax({
+                url: "<?php echo site_url('survei/save'); ?>",
+                type: "POST",
+                data: {
+                    nama_pasien: formData.nama_pasien,
+                    no_rm: formData.no_rm,
+                    idruangan: formData.idruangan,
+                    kepuasan: formData.kepuasan,
+                    idlayanan_petugas: formData.idlayanan_petugas,
+                    description_petugas: formData.description_petugas, // Ini akan menjadi objek {id: deskripsi}
+                    idlayanan_fasilitas: formData.idlayanan_fasilitas,
+                    description_fasilitas: formData.description_fasilitas,
+                    idlayanan_prosedur: formData.idlayanan_prosedur,
+                    description_prosedur: formData.description_prosedur,
+                    idlayanan_waktu: formData.idlayanan_waktu,
+                    description_waktu: formData.description_waktu,
+                    // device_id: formData.device_id,
+                    // device_meta: formData.device_meta,
+                    // start_time_survei: formData.start_time_survei,
+                    // email: formData.email,
+                },
+                dataType: "json",
+                signal, // penting agar bisa di-abort
+                success: function(res) {
+                    hide_loading();
+                    lastAjaxController = null; // reset
+
+                    if (res.err_code == 0) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Terima kasih!',
+                            text: res.err_message,
+                            customClass: {
+                                popup: 'swal2-large'
+                            }
+                        }).then(() => {
+                            window.location.href = "<?php echo base_url(); ?>";
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: res.err_message || 'Terjadi kesalahan saat menyimpan data.',
+                            customClass: {
+                                popup: 'swal2-large'
+                            }
+                        });
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (textStatus === 'abort') {
+                        console.log('Request sebelumnya dibatalkan.');
+                        return;
+                    }
+                    hide_loading();
+                    lastAjaxController = null;
+                    
+                    console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
-                        text: res.err_message || 'Terjadi kesalahan saat menyimpan data.',
+                        text: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
                         customClass: {
                             popup: 'swal2-large'
                         }
                     });
                 }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
-                    customClass: {
-                        popup: 'swal2-large'
-                    }
-                });
-            }
-        });
+            });
+        }, 1000);
     });
 
     // Step 2 <- Step 1
