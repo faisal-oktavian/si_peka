@@ -57,44 +57,39 @@
     .select2-selection__rendered {
         padding-right: 0px !important;
     }
+    /* #selfie-section {
+        text-align: center;
+    }
 
+    #selfie-section video {
+        margin: 0 auto;
+        border-radius: 8px;
+    }
 
+    #selfie-section .btn-group {
+        margin-top: 8px;
+    }
 
-
-#selfie-section {
-  text-align: center;
-}
-
-#selfie-section video {
-  /* display: block; */
-  margin: 0 auto;
-  border-radius: 8px;
-}
-
-#selfie-section .btn-group {
-  margin-top: 8px;
-}
-
-#selfie-section img, 
-#selfie-section video {
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-#thumb {
-    width: 160px; 
-    height: 120px; 
-    object-fit: cover; 
-    border-radius: 8px; 
-    border: 2px solid #ccc; 
-    display: none; 
-    margin-bottom: 8px;
-}
-#video {
-    width: 160px; 
-    height: 120px; 
-    border-radius: 8px; 
-    display: none; 
-    margin: 0 auto;
-}
+    #selfie-section img, 
+    #selfie-section video {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #thumb {
+        width: 160px; 
+        height: 120px; 
+        object-fit: cover; 
+        border-radius: 8px; 
+        border: 2px solid #ccc; 
+        display: none; 
+        margin-bottom: 8px;
+    }
+    #video {
+        width: 160px; 
+        height: 120px; 
+        border-radius: 8px; 
+        display: none; 
+        margin: 0 auto;
+    } */
 </style>
 
 <!-- Gradient full layar -->
@@ -291,7 +286,7 @@
                         </div>
 
                         <!-- Selfie -->
-                        <div class="hide">
+                        <div class="hide"> <!-- hapus tag div ini untuk memakai fitur verifikasi wajah -->
                             <div id="selfie-section" class="mt-3 text-center">
                                 <label class="font-weight-bold d-block mb-2">Verifisi Wajah</label>
 

@@ -223,7 +223,7 @@ class Survei extends AZ_Controller {
         $kepuasan = $post['kepuasan'];
         // $device_id = $post['device_id'];
         // $email = $post['email'] ?? 'unknown';
-        $selfie_path = $post['selfie_path'];
+        // $selfie_path = $post['selfie_path'];
 
         // if(empty($device_id)){
         //     $device_id = 'unknown-'.bin2hex(random_bytes(8));
@@ -265,7 +265,7 @@ class Survei extends AZ_Controller {
             // 'device_hash' => $device_hash,
             // 'ip_address_2' => $this->input->ip_address(),
             // 'user_agent' => $this->input->user_agent(),
-            'selfie_path' => $selfie_path,
+            // 'selfie_path' => $selfie_path,
         );        
 
         $res = $this->db->insert('responden', $data_save);
@@ -377,104 +377,103 @@ class Survei extends AZ_Controller {
         echo json_encode($response);
     }
 
-    // Validasi selfie survei
-    public function upload_selfie() {
+    // // Validasi selfie survei
+    // public function upload_selfie() {
 
-        $upload_dir = FCPATH . 'uploads/selfie/';
-        if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+    //     $upload_dir = FCPATH . 'uploads/selfie/';
+    //     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
-        // === Kiriman Base64 dari Kamera ===
-        if ($this->input->post('selfie_data')) {
-            $img = $this->input->post('selfie_data');
-            $img = str_replace('data:image/jpeg;base64,', '', $img);
-            $img = str_replace('data:image/png;base64,', '', $img);
-            $img = str_replace(' ', '+', $img);
+    //     // === Kiriman Base64 dari Kamera ===
+    //     if ($this->input->post('selfie_data')) {
+    //         $img = $this->input->post('selfie_data');
+    //         $img = str_replace('data:image/jpeg;base64,', '', $img);
+    //         $img = str_replace('data:image/png;base64,', '', $img);
+    //         $img = str_replace(' ', '+', $img);
 
-            $img = preg_replace('#^data:image/\w+;base64,#i', '', $img);
-            $img = str_replace(' ', '+', $img);
-            $data = base64_decode($img);
+    //         $img = preg_replace('#^data:image/\w+;base64,#i', '', $img);
+    //         $img = str_replace(' ', '+', $img);
+    //         $data = base64_decode($img);
 
-            if ($data === false || strlen($data) < 1000) {
-                echo json_encode(['status' => false, 'message' => 'Data gambar tidak valid']);
-                return;
-            }
+    //         if ($data === false || strlen($data) < 1000) {
+    //             echo json_encode(['status' => false, 'message' => 'Data gambar tidak valid']);
+    //             return;
+    //         }
 
-            $filename = 'selfie_' . time() . '.jpg';
-            $path = $upload_dir . $filename;
+    //         $filename = 'selfie_' . time() . '.jpg';
+    //         $path = $upload_dir . $filename;
 
-            if (file_put_contents($path, $data, LOCK_EX) === false) {
-                echo json_encode(['status' => false, 'message' => 'Gagal menyimpan file']);
-                return;
-            }
+    //         if (file_put_contents($path, $data, LOCK_EX) === false) {
+    //             echo json_encode(['status' => false, 'message' => 'Gagal menyimpan file']);
+    //             return;
+    //         }
 
-            if (filesize($path) < 1000) {
-                echo json_encode(['status' => false, 'message' => 'File kosong (hasil base64 tidak valid)']);
-                return;
-            }
+    //         if (filesize($path) < 1000) {
+    //             echo json_encode(['status' => false, 'message' => 'File kosong (hasil base64 tidak valid)']);
+    //             return;
+    //         }
 
-            file_put_contents($path, $data, LOCK_EX);
-            clearstatcache();
-            $size = filesize($path);
-            if ($size < 5000) {
-                echo json_encode(['status' => false, 'message' => "File terlalu kecil ($size bytes)."]);
-                return;
-            }
-            // Kompres gambar
-            $this->_compress_image($path, $path, 70);
+    //         file_put_contents($path, $data, LOCK_EX);
+    //         clearstatcache();
+    //         $size = filesize($path);
+    //         if ($size < 5000) {
+    //             echo json_encode(['status' => false, 'message' => "File terlalu kecil ($size bytes)."]);
+    //             return;
+    //         }
+    //         // Kompres gambar
+    //         $this->_compress_image($path, $path, 70);
 
-            echo json_encode(['status' => true, 'path' => 'uploads/selfie/' . $filename]);
-            return;
-        }
+    //         echo json_encode(['status' => true, 'path' => 'uploads/selfie/' . $filename]);
+    //         return;
+    //     }
 
-        // === Kiriman File Manual ===
-        if (!empty($_FILES['selfie_file']['name'])) {
-            $config['upload_path'] = $upload_dir;
-            $config['allowed_types'] = 'jpg|jpeg|png';
-            $config['max_size'] = 5120;
-            $config['file_name'] = 'selfie_' . time();
-            $this->load->library('upload', $config);
+    //     // === Kiriman File Manual ===
+    //     if (!empty($_FILES['selfie_file']['name'])) {
+    //         $config['upload_path'] = $upload_dir;
+    //         $config['allowed_types'] = 'jpg|jpeg|png';
+    //         $config['max_size'] = 5120;
+    //         $config['file_name'] = 'selfie_' . time();
+    //         $this->load->library('upload', $config);
 
-            if (!$this->upload->do_upload('selfie_file')) {
-                echo json_encode(['status' => false, 'message' => $this->upload->display_errors('', '')]);
-                return;
-            }
+    //         if (!$this->upload->do_upload('selfie_file')) {
+    //             echo json_encode(['status' => false, 'message' => $this->upload->display_errors('', '')]);
+    //             return;
+    //         }
 
-            $file = $this->upload->data();
-            $path = $upload_dir . $file['file_name'];
-            $this->_compress_image($path, $path, 70);
+    //         $file = $this->upload->data();
+    //         $path = $upload_dir . $file['file_name'];
+    //         $this->_compress_image($path, $path, 70);
 
-            echo json_encode(['status' => true, 'path' => 'uploads/selfie/' . $file['file_name']]);
-            return;
-        }
+    //         echo json_encode(['status' => true, 'path' => 'uploads/selfie/' . $file['file_name']]);
+    //         return;
+    //     }
 
-        echo json_encode(['status' => false, 'message' => 'Tidak ada data gambar yang dikirim.']);
-    }
+    //     echo json_encode(['status' => false, 'message' => 'Tidak ada data gambar yang dikirim.']);
+    // }
 
-    private function _compress_image($source, $destination, $quality) {
+    // private function _compress_image($source, $destination, $quality) {
         
-        if (!file_exists($source) || filesize($source) == 0) {
-            echo json_encode(['status' => false, 'message' => 'File tidak ditemukan atau kosong']);
-            exit;
-        }
+    //     if (!file_exists($source) || filesize($source) == 0) {
+    //         echo json_encode(['status' => false, 'message' => 'File tidak ditemukan atau kosong']);
+    //         exit;
+    //     }
 
-        $info = @getimagesize($source);
-        if ($info === false) {
-            echo json_encode(['status' => false, 'message' => 'Gagal membaca informasi gambar (mungkin file rusak)']);
-            exit;
-        }
+    //     $info = @getimagesize($source);
+    //     if ($info === false) {
+    //         echo json_encode(['status' => false, 'message' => 'Gagal membaca informasi gambar (mungkin file rusak)']);
+    //         exit;
+    //     }
 
-        $mime = isset($info['mime']) ? $info['mime'] : '';
-        if ($mime == 'image/jpeg') {
-            $image = imagecreatefromjpeg($source);
-        } elseif ($mime == 'image/png') {
-            $image = imagecreatefrompng($source);
-        } else {
-            echo json_encode(['status' => false, 'message' => 'Format gambar tidak didukung (' . $mime . ')']);
-            exit;
-        }
+    //     $mime = isset($info['mime']) ? $info['mime'] : '';
+    //     if ($mime == 'image/jpeg') {
+    //         $image = imagecreatefromjpeg($source);
+    //     } elseif ($mime == 'image/png') {
+    //         $image = imagecreatefrompng($source);
+    //     } else {
+    //         echo json_encode(['status' => false, 'message' => 'Format gambar tidak didukung (' . $mime . ')']);
+    //         exit;
+    //     }
 
-        imagejpeg($image, $destination, $quality);
-        imagedestroy($image);
-    }
-
+    //     imagejpeg($image, $destination, $quality);
+    //     imagedestroy($image);
+    // }
 }

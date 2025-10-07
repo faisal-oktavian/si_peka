@@ -647,118 +647,118 @@
         Swal.close();
     }
 
-    // Selfie
-    let streamRef = null;
-    const video = document.getElementById('video');
-    const btnStart = document.getElementById('btnStartCamera');
-    const btnCapture = document.getElementById('btnCapture');
-    const btnStop = document.getElementById('btnStopCamera');
-    const thumb = document.getElementById('thumb');
-    const fileInput = document.getElementById('selfie_file');
-    const selfiePath = document.getElementById('selfie_path');
-    const canvas = document.createElement('canvas');
+    // // Selfie
+    // let streamRef = null;
+    // const video = document.getElementById('video');
+    // const btnStart = document.getElementById('btnStartCamera');
+    // const btnCapture = document.getElementById('btnCapture');
+    // const btnStop = document.getElementById('btnStopCamera');
+    // const thumb = document.getElementById('thumb');
+    // const fileInput = document.getElementById('selfie_file');
+    // const selfiePath = document.getElementById('selfie_path');
+    // const canvas = document.createElement('canvas');
 
-    btnStart.addEventListener('click', async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
-            streamRef = stream;
+    // btnStart.addEventListener('click', async () => {
+    //     try {
+    //         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    //         video.srcObject = stream;
+    //         streamRef = stream;
 
-            // tampilkan video & tombol capture
-            video.style.display = 'block';
-            btnCapture.style.display = 'inline-block';
-            btnStop.style.display = 'inline-block';
-            btnStart.style.display = 'none';
-            thumb.style.display = 'none';
-        } catch (e) {
-            alert('Kamera tidak dapat diakses: ' + e.message);
-        }
-    });
+    //         // tampilkan video & tombol capture
+    //         video.style.display = 'block';
+    //         btnCapture.style.display = 'inline-block';
+    //         btnStop.style.display = 'inline-block';
+    //         btnStart.style.display = 'none';
+    //         thumb.style.display = 'none';
+    //     } catch (e) {
+    //         alert('Kamera tidak dapat diakses: ' + e.message);
+    //     }
+    // });
 
-    btnStop.addEventListener('click', () => {
-        if (streamRef) {
-            streamRef.getTracks().forEach(t => t.stop());
-            streamRef = null;
-        }
-        video.style.display = 'none';
-        btnCapture.style.display = 'none';
-        btnStop.style.display = 'none';
-        btnStart.style.display = 'inline-block';
-    });
+    // btnStop.addEventListener('click', () => {
+    //     if (streamRef) {
+    //         streamRef.getTracks().forEach(t => t.stop());
+    //         streamRef = null;
+    //     }
+    //     video.style.display = 'none';
+    //     btnCapture.style.display = 'none';
+    //     btnStop.style.display = 'none';
+    //     btnStart.style.display = 'inline-block';
+    // });
 
-    btnCapture.addEventListener('click', () => {
-        let canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const vw = video.videoWidth;
-        const vh = video.videoHeight;
-        const size = 400;
-        canvas.width = size;
-        canvas.height = size;
-        ctx.drawImage(video, 0, 0, size, size);
+    // btnCapture.addEventListener('click', () => {
+    //     let canvas = document.createElement('canvas');
+    //     const ctx = canvas.getContext('2d');
+    //     const vw = video.videoWidth;
+    //     const vh = video.videoHeight;
+    //     const size = 400;
+    //     canvas.width = size;
+    //     canvas.height = size;
+    //     ctx.drawImage(video, 0, 0, size, size);
 
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        thumb.src = dataUrl;
-        thumb.style.display = 'inline-block';
+    //     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+    //     thumb.src = dataUrl;
+    //     thumb.style.display = 'inline-block';
 
-        // console.log('Base64 length:', dataUrl.length);
-        // console.log('Base64 prefix:', dataUrl.substring(0, 30));
+    //     // console.log('Base64 length:', dataUrl.length);
+    //     // console.log('Base64 prefix:', dataUrl.substring(0, 30));
 
-        // Kirim ke server
-        uploadSelfie(dataUrl);
+    //     // Kirim ke server
+    //     uploadSelfie(dataUrl);
 
-        // Tutup kamera otomatis
-        btnStop.click();
-    });
+    //     // Tutup kamera otomatis
+    //     btnStop.click();
+    // });
 
-    fileInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if (!file) return;
+    // fileInput.addEventListener('change', function() {
+    //     const file = this.files[0];
+    //     if (!file) return;
 
-        if (file.size > 5 * 1024 * 1024) {
-            alert('File terlalu besar (maks. 5MB)');
-            return;
-        }
+    //     if (file.size > 5 * 1024 * 1024) {
+    //         alert('File terlalu besar (maks. 5MB)');
+    //         return;
+    //     }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            thumb.src = e.target.result;
-            thumb.style.display = 'inline-block';
-        };
-        reader.readAsDataURL(file);
+    //     const reader = new FileReader();
+    //     reader.onload = function(e) {
+    //         thumb.src = e.target.result;
+    //         thumb.style.display = 'inline-block';
+    //     };
+    //     reader.readAsDataURL(file);
 
-        const fd = new FormData();
-        fd.append('selfie_file', file);
+    //     const fd = new FormData();
+    //     fd.append('selfie_file', file);
 
-        $.ajax({
-            url: base_url + 'survei/upload_selfie',
-            type: 'POST',
-            data: fd,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(res) {
-                if (res.status) {
-                    selfiePath.value = res.path;
-                } 
-                else {
-                    alert('Gagal upload: ' + res.message);
-                }
-            }
-        });
-    });
+    //     $.ajax({
+    //         url: base_url + 'survei/upload_selfie',
+    //         type: 'POST',
+    //         data: fd,
+    //         processData: false,
+    //         contentType: false,
+    //         dataType: 'json',
+    //         success: function(res) {
+    //             if (res.status) {
+    //                 selfiePath.value = res.path;
+    //             } 
+    //             else {
+    //                 alert('Gagal upload: ' + res.message);
+    //             }
+    //         }
+    //     });
+    // });
 
-    function uploadSelfie(dataUrl) {
-        $.post(base_url + 'survei/upload_selfie', { selfie_data: dataUrl }, function(res) {
-            try {
-                const data = JSON.parse(res);
-                if (data.status) {
-                    selfiePath.value = data.path;
-                } 
-                else {
-                    alert('Gagal upload: ' + data.message);
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        });
-    }
+    // function uploadSelfie(dataUrl) {
+    //     $.post(base_url + 'survei/upload_selfie', { selfie_data: dataUrl }, function(res) {
+    //         try {
+    //             const data = JSON.parse(res);
+    //             if (data.status) {
+    //                 selfiePath.value = data.path;
+    //             } 
+    //             else {
+    //                 alert('Gagal upload: ' + data.message);
+    //             }
+    //         } catch (err) {
+    //             console.error(err);
+    //         }
+    //     });
+    // }
