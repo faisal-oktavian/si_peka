@@ -222,17 +222,18 @@ p {
     top: 20px;
     z-index: 99; /* lebih besar dari card */
     width: 140px;
-    max-width: 120px; /* biar lebih responsive */
+    max-width: 140px; /* biar lebih responsive */
     height: auto;
 }
 
 .corner-logo.left {
     left: 20px;
+    /* width: 120px; */
 }
 
 .corner-logo.right {
     right: 20px;
-    width: 110px;
+    width: 100px;
 }
 
 
