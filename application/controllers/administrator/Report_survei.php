@@ -42,6 +42,7 @@ class Report_survei extends CI_Controller {
 		$nama_pasien = $this->input->get('nama_pasien');
 		$idruangan = $this->input->get('idruangan');
 		$kepuasan = $this->input->get('kepuasan');
+		$sess_idruangan = $this->session->userdata('idruangan');
         $nama_ruangan = '';
 
 		if ($date1 == null) {
@@ -64,6 +65,7 @@ class Report_survei extends CI_Controller {
 			'no_rm' => $no_rm,
 			'nama_pasien' => $nama_pasien,
 			'idruangan' => $idruangan,
+			'sess_idruangan' => $sess_idruangan,
 			'kepuasan' => $kepuasan,
 		);
 
@@ -102,12 +104,18 @@ class Report_survei extends CI_Controller {
 		$nama_pasien = azarr($the_data, 'nama_pasien');
 		$idruangan = azarr($the_data, 'idruangan');
 		$kepuasan = azarr($the_data, 'kepuasan');
+		$sess_idruangan = azarr($the_data, 'sess_idruangan');
+		$role_name = $this->session->userdata('role_name');
+		$idrole = $this->session->userdata('idrole');
 
         // testing
         // $this->db->where('no_rm IN  ("25149125", "14222125") ');
 
 		$arr_data = array();
         
+		if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
+			$this->db->where('responden.idruangan = "'.$sess_idruangan.'" ');
+		}
         $this->db->where('date(responden.tanggal_input) >= "'.Date('Y-m-d', strtotime($date1)).'"');
         $this->db->where('date(responden.tanggal_input) <= "'.Date('Y-m-d', strtotime($date2)).'"');
         if (strlen($no_rm) > 0) {

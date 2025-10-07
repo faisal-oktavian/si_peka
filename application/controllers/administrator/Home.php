@@ -19,8 +19,15 @@ class Home extends AZ_Controller {
 		$this->load->helper('az_config');
 		$this->load->helper('az_core');
 
+		$role_name = $this->session->userdata('role_name');
+		$idrole = $this->session->userdata('idrole');
+		$sess_idruangan = $this->session->userdata('idruangan');
+
 		// DIAGRAM KEPUASAN KOMPONEN
 			// Grafik Puas
+			if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
+				$this->db->where('responden.idruangan = "'.$sess_idruangan.'" ');
+			}
 			$this->db->where('kepuasan = "puas" ');
 			$this->db->where('is_active = "1" ');
 			$this->db->join('responden_detail', 'responden_detail.idresponden = responden.idresponden');
@@ -29,6 +36,9 @@ class Home extends AZ_Controller {
 			// echo "<pre>"; print_r($this->db->last_query()); die();
 
 			// Grafik Tidak Puas
+			if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
+				$this->db->where('responden.idruangan = "'.$sess_idruangan.'" ');
+			}
 			$this->db->where('kepuasan = "tidak_puas" ');
 			$this->db->where('is_active = "1" ');
 			$this->db->join('responden_detail', 'responden_detail.idresponden = responden.idresponden');
@@ -42,33 +52,39 @@ class Home extends AZ_Controller {
 			// $arr_tidak_puas = array();
 
 			// 1. Data Komponen Petugas
-				$subquery_petugas_puas = $this->db
-					->select('responden_detail.idlayanan_petugas, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_petugas, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_petugas')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_petugas IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'puas')
+					->where('responden.kepuasan', 'puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_petugas_puas = $this->db
 					->group_by('responden_detail.idlayanan_petugas, nama_layanan')
 					->order_by('jumlah', 'DESC')
-					->get_compiled_select(); // subquery di-compile jadi string SQL
-
+					->get_compiled_select();
+				
 				$petugas_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_petugas_puas) AS petugas_puas");
 				$petugas_puas_5 = $this->db->query("SELECT * FROM ($subquery_petugas_puas) AS petugas_puas LIMIT 5");
 				// echo "<pre>"; print_r($this->db->last_query()); die();
 
-				$subquery_petugas_tidak_puas = $this->db
-					->select('responden_detail.idlayanan_petugas, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_petugas, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_petugas')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_petugas IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'tidak_puas')
+					->where('responden.kepuasan', 'tidak_puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_petugas_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_petugas, nama_layanan')
 					->order_by('jumlah', 'DESC')
-					->get_compiled_select(); // subquery di-compile jadi string SQL
+					->get_compiled_select();
 
 				$petugas_tidak_puas = $this->db->query("SELECT sum(jumlah) as total_data FROM ($subquery_petugas_tidak_puas) AS petugas_tidak_puas");
 				$petugas_tidak_puas_5 = $this->db->query("SELECT * FROM ($subquery_petugas_tidak_puas) AS petugas_tidak_puas LIMIT 5");
@@ -80,14 +96,17 @@ class Home extends AZ_Controller {
 				// $arr_tidak_puas[] = $total_komponen_petugas ? round(($petugas_tidak_puas->num_rows() / $total_komponen_petugas) * 100) : 0;
 
 			// 2. Data Komponen Fasilitas
-				$subquery_fasilitas_puas = $this->db
-					->select('responden_detail.idlayanan_fasilitas, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_fasilitas, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_fasilitas')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_fasilitas IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'puas')
+					->where('responden.kepuasan', 'puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_fasilitas_puas = $this->db
 					->group_by('responden_detail.idlayanan_fasilitas, nama_layanan')
 					->order_by('jumlah', 'DESC')
 					->get_compiled_select(); // subquery di-compile jadi string SQL
@@ -96,14 +115,17 @@ class Home extends AZ_Controller {
 				$fasilitas_puas_5 = $this->db->query("SELECT * FROM ($subquery_fasilitas_puas) AS fasilitas_puas LIMIT 5");
 				// echo "<pre>"; print_r($this->db->last_query()); die();
 
-				$subquery_fasilitas_tidak_puas = $this->db
-					->select('responden_detail.idlayanan_fasilitas, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_fasilitas, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_fasilitas')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_fasilitas IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'tidak_puas')
+					->where('responden.kepuasan', 'tidak_puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_fasilitas_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_fasilitas, nama_layanan')
 					->order_by('jumlah', 'DESC')
 					->get_compiled_select(); // subquery di-compile jadi string SQL
@@ -118,14 +140,17 @@ class Home extends AZ_Controller {
 				// $arr_tidak_puas[] = $total_komponen_fasilitas ? round(($fasilitas_tidak_puas->num_rows() / $total_komponen_fasilitas) * 100) : 0;
 
 			// 3. Data Komponen Prosedur
-				$subquery_prosedur_puas = $this->db
-					->select('responden_detail.idlayanan_prosedur, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_prosedur, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_prosedur')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_prosedur IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'puas')
+					->where('responden.kepuasan', 'puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_prosedur_puas = $this->db
 					->group_by('responden_detail.idlayanan_prosedur, nama_layanan')
 					->order_by('jumlah', 'DESC')
 					->get_compiled_select(); // subquery di-compile jadi string SQL
@@ -134,14 +159,17 @@ class Home extends AZ_Controller {
 				$prosedur_puas_5 = $this->db->query("SELECT * FROM ($subquery_prosedur_puas) AS prosedur_puas LIMIT 5");
 				// echo "<pre>"; print_r($this->db->last_query()); die();
 
-				$subquery_prosedur_tidak_puas = $this->db
-					->select('responden_detail.idlayanan_prosedur, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_prosedur, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_prosedur')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_prosedur IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'tidak_puas')
+					->where('responden.kepuasan', 'tidak_puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_prosedur_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_prosedur, nama_layanan')
 					->order_by('jumlah', 'DESC')
 					->get_compiled_select(); // subquery di-compile jadi string SQL
@@ -156,14 +184,17 @@ class Home extends AZ_Controller {
 				// $arr_tidak_puas[] = $total_komponen_prosedur ? round(($prosedur_tidak_puas->num_rows() / $total_komponen_prosedur) * 100) : 0;
 			
 			// 4. Data Komponen Waktu
-				$subquery_waktu_puas = $this->db
-					->select('responden_detail.idlayanan_waktu, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_waktu, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_waktu')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_waktu IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'puas')
+					->where('responden.kepuasan', 'puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_waktu_puas = $this->db
 					->group_by('responden_detail.idlayanan_waktu, nama_layanan')
 					->order_by('jumlah', 'DESC')
 					->get_compiled_select(); // subquery di-compile jadi string SQL
@@ -172,14 +203,17 @@ class Home extends AZ_Controller {
 				$waktu_puas_5 = $this->db->query("SELECT * FROM ($subquery_waktu_puas) AS waktu_puas LIMIT 5");
 				// echo "<pre>"; print_r($this->db->last_query()); die();
 
-				$subquery_waktu_tidak_puas = $this->db
-					->select('responden_detail.idlayanan_waktu, nama_layanan, COUNT(*) AS jumlah', false)
+				$this->db->select('responden_detail.idlayanan_waktu, nama_layanan, COUNT(*) AS jumlah', false)
 					->from('responden')
 					->join('responden_detail', 'responden_detail.idresponden = responden.idresponden')
 					->join('layanan', 'layanan.idlayanan = responden_detail.idlayanan_waktu')
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_waktu IS NOT NULL', null, false)
-					->where('responden.kepuasan', 'tidak_puas')
+					->where('responden.kepuasan', 'tidak_puas');
+				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
+					$this->db->where('responden.idruangan', $sess_idruangan);
+				}
+				$subquery_waktu_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_waktu, nama_layanan')
 					->order_by('jumlah', 'DESC')
 					->get_compiled_select(); // subquery di-compile jadi string SQL

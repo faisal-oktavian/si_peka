@@ -78,6 +78,11 @@ class Responden extends CI_Controller {
 		$idruangan = $this->input->get('idf_ruangan');
 		$kepuasan = $this->input->get('vf_kepuasan');
 
+		$role_name = $this->session->userdata('role_name');
+		$idrole = $this->session->userdata('idrole');
+		$sess_idruangan = $this->session->userdata('idruangan');
+
+
 		$crud->set_select('idresponden, date_format(tanggal_input, "%d-%m-%Y %H:%i:%s") as txt_tanggal_input, no_rm, nama_pasien, nama_ruangan, kepuasan');
 		$crud->set_select_table('idresponden, txt_tanggal_input, no_rm, nama_pasien, nama_ruangan, kepuasan');
 		$crud->set_filter('no_rm, nama_pasien, nama_ruangan, kepuasan');
@@ -86,6 +91,9 @@ class Responden extends CI_Controller {
         $crud->add_join_manual('ruangan', 'responden.idruangan = ruangan.idruangan');
 		$crud->set_id($this->controller);
 
+		if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
+			$crud->add_where('responden.idruangan = "'.$sess_idruangan.'" ');
+		}
         if (strlen($date1) > 0 && strlen($date2) > 0) {
             $crud->add_where('date(responden.tanggal_input) >= "'.Date('Y-m-d', strtotime($date1)).'"');
             $crud->add_where('date(responden.tanggal_input) <= "'.Date('Y-m-d', strtotime($date2)).'"');

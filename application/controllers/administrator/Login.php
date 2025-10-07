@@ -25,12 +25,14 @@ class Login extends CI_Controller
         $username = azarr($_POST, "username");
         $password = azarr($_POST, "password");
 
-        $this->db->select('username, iduser, user.name as user_name, user.idrole, role.name as role_name');
+        $this->db->select('username, iduser, user.name as user_name, user.idrole, role.name as role_name, ruangan.idruangan');
 		$this->db->where("username", $username);
 		$this->db->where("password", md5($password));
 		$this->db->where('user.status', 1);
 		$this->db->join('role', 'role.idrole = user.idrole', 'left');
+		$this->db->join('ruangan', 'ruangan.idrole = role.idrole', 'left');
 		$data = $this->db->get("user");
+        // echo "<pre>"; print_r($this->db->last_query());die;
 
         if ($data->num_rows() > 0) {
             $data_username = $data->row()->username;
@@ -38,12 +40,14 @@ class Login extends CI_Controller
             $data_nama_user = $data->row()->user_name;
             $data_idrole = $data->row()->idrole;
             $data_role_name = $data->row()->role_name;
+            $data_idruangan = $data->row()->idruangan;
 
             $this->session->set_userdata("username", $data_username);
 			$this->session->set_userdata("iduser", $data_id);
 			$this->session->set_userdata("name", $data_nama_user);
 			$this->session->set_userdata('idrole', $data_idrole);
 			$this->session->set_userdata('role_name', $data_role_name);
+			$this->session->set_userdata('idruangan', $data_idruangan);
 
             redirect(app_url()."home");
 
