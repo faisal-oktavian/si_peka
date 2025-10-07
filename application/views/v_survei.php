@@ -141,27 +141,29 @@
                 </div>
             </div>
             
-            <!-- OTP Email Pasien -->
-            <div class="form-group">
-                <label class="control-label col-md-4"></label>
-                <div class="col-md-6">
-                    <div style="display: flex; gap: 8px;">
-                        <input type="email" id="email" name="email" placeholder="Masukkan Email Anda" 
-                            class="form-control"    >
-                        <button type="button" id="btnSendOTP" class="btn btn-primary">Kirim OTP</button>
+            <div class="hide"> <!-- hapus tag div ini untuk memakai fitur otp email -->
+                <!-- OTP Email Pasien -->
+                <div class="form-group">
+                    <label class="control-label col-md-4"></label>
+                    <div class="col-md-6">
+                        <div style="display: flex; gap: 8px;">
+                            <input type="email" id="email" name="email" placeholder="Masukkan Email Anda" 
+                                class="form-control"    >
+                            <button type="button" id="btnSendOTP" class="btn btn-primary">Kirim OTP</button>
+                        </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4"></label>
+                    <div class="col-md-6">
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="otp" name="otp" placeholder="Masukkan Kode OTP" class="form-control">
+                            <button type="button" id="btnVerifyOTP" class="btn btn-success">Verifikasi OTP</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OTP Email Pasien -->
             </div>
-            <div class="form-group">
-                <label class="control-label col-md-4"></label>
-                <div class="col-md-6">
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="otp" name="otp" placeholder="Masukkan Kode OTP" class="form-control">
-                        <button type="button" id="btnVerifyOTP" class="btn btn-success">Verifikasi OTP</button>
-                    </div>
-                </div>
-            </div>            
-            <!-- END OTP Email Pasien -->
 
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                 <button type="button" class="btn-back" style="background:#6c757d;" onclick="window.location.href='<?php echo site_url(""); ?>'"><i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali</button>

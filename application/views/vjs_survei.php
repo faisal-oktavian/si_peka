@@ -170,109 +170,109 @@
         }
     });
 
-    // OTP Email Pasien
-    let resendTimeout = false;
-    let surveyStartTime = new Date(); // waktu survei dimulai
-    let verifOTP = false;
+    // // OTP Email Pasien
+    // let resendTimeout = false;
+    // let surveyStartTime = new Date(); // waktu survei dimulai
+    // let verifOTP = false;
 
-    $('#otp, #email').on('input', function() {
-        verifOTP = false;
-    });
+    // $('#otp, #email').on('input', function() {
+    //     verifOTP = false;
+    // });
 
-    $('#btnSendOTP').on('click', function() {
-        if (resendTimeout) {
-            alert('Silakan tunggu 1 menit untuk kirim ulang OTP.');
-            return;
-        }
+    // $('#btnSendOTP').on('click', function() {
+    //     if (resendTimeout) {
+    //         alert('Silakan tunggu 1 menit untuk kirim ulang OTP.');
+    //         return;
+    //     }
 
-        show_loading();
-        var input_email = $('#email').val();
+    //     show_loading();
+    //     var input_email = $('#email').val();
 
-        setTimeout(function () {
-            send_otp(input_email);
-        }, 1000);
-    });
+    //     setTimeout(function () {
+    //         send_otp(input_email);
+    //     }, 1000);
+    // });
 
-    function send_otp(input_email) {
-        $.post(base_url + 'survei/send_otp', { 
-            email: input_email 
-        }, function(res) {
-            let data = JSON.parse(res);
-            hide_loading();
+    // function send_otp(input_email) {
+    //     $.post(base_url + 'survei/send_otp', { 
+    //         email: input_email 
+    //     }, function(res) {
+    //         let data = JSON.parse(res);
+    //         hide_loading();
 
-            if (data.status) {
-                Swal.fire({
-                    icon: 'success',
-                    // title: 'Terima kasih!',
-                    text: data.message,
-                    customClass: {
-                        popup: 'swal2-large'
-                    }
-                }).then(() => {
-                    // code
-                });
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    // title: 'Gagal',
-                    text: data.message || 'Terjadi kesalahan saat menyimpan data.',
-                    customClass: {
-                        popup: 'swal2-large'
-                    }
-                });
-            }
+    //         if (data.status) {
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 // title: 'Terima kasih!',
+    //                 text: data.message,
+    //                 customClass: {
+    //                     popup: 'swal2-large'
+    //                 }
+    //             }).then(() => {
+    //                 // code
+    //             });
+    //         }
+    //         else {
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 // title: 'Gagal',
+    //                 text: data.message || 'Terjadi kesalahan saat menyimpan data.',
+    //                 customClass: {
+    //                     popup: 'swal2-large'
+    //                 }
+    //             });
+    //         }
 
-            if (data.status) {
-                resendTimeout = true;
-                setTimeout(() => resendTimeout = false, 60000); // 1 menit
-            }
-        });
-    }
+    //         if (data.status) {
+    //             resendTimeout = true;
+    //             setTimeout(() => resendTimeout = false, 60000); // 1 menit
+    //         }
+    //     });
+    // }
 
-    $('#btnVerifyOTP').on('click', function() {
-        show_loading();
+    // $('#btnVerifyOTP').on('click', function() {
+    //     show_loading();
 
-        setTimeout(function () {
-            verify_otp();
-        }, 1000);
-    });
+    //     setTimeout(function () {
+    //         verify_otp();
+    //     }, 1000);
+    // });
 
-    function verify_otp() {
-        $.post(base_url + 'survei/verify_otp', { 
-            email: $('#email').val(), 
-            otp: $('#otp').val() 
-        }, function(res) {
-            let data = JSON.parse(res);
-            hide_loading();
+    // function verify_otp() {
+    //     $.post(base_url + 'survei/verify_otp', { 
+    //         email: $('#email').val(), 
+    //         otp: $('#otp').val() 
+    //     }, function(res) {
+    //         let data = JSON.parse(res);
+    //         hide_loading();
 
-            if (data.status) {
-                Swal.fire({
-                    icon: 'success',
-                    // title: 'Terima kasih!',
-                    text: data.message,
-                    customClass: {
-                        popup: 'swal2-large'
-                    }
-                }).then(() => {
-                    verifOTP = true;
-                });
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    // title: 'Gagal',
-                    text: data.message || 'Terjadi kesalahan saat menyimpan data.',
-                    customClass: {
-                        popup: 'swal2-large'
-                    }
-                }).then(() => {
-                    verifOTP = false;
-                });
-            }
-        });
-    }
-    // END OTP Email Pasien
+    //         if (data.status) {
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 // title: 'Terima kasih!',
+    //                 text: data.message,
+    //                 customClass: {
+    //                     popup: 'swal2-large'
+    //                 }
+    //             }).then(() => {
+    //                 verifOTP = true;
+    //             });
+    //         }
+    //         else {
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 // title: 'Gagal',
+    //                 text: data.message || 'Terjadi kesalahan saat menyimpan data.',
+    //                 customClass: {
+    //                     popup: 'swal2-large'
+    //                 }
+    //             }).then(() => {
+    //                 verifOTP = false;
+    //             });
+    //         }
+    //     });
+    // }
+    // // END OTP Email Pasien
 
     // Step 1 -> Step 2
     $('#btn-next-1').on('click', function(e) {
@@ -285,7 +285,7 @@
         formData.nama_pasien = $('#nama_pasien').val();
         formData.no_rm = $('#no_rm').val();
         formData.idruangan = $('#idruangan').val();
-        formData.email = $('#email').val();
+        // formData.email = $('#email').val();
 
         // form validasi
         if (!formData.nama_pasien) {
@@ -317,18 +317,18 @@
             return;
         }
 
-        if (!verifOTP) {
-            Swal.fire({
-                icon: 'error',
-                // title: 'Gagal',
-                text: 'Email belum diverifikasi.',
-                customClass: {
-                    popup: 'swal2-large'
-                }
-            });
+        // if (!verifOTP) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         // title: 'Gagal',
+        //         text: 'Email belum diverifikasi.',
+        //         customClass: {
+        //             popup: 'swal2-large'
+        //         }
+        //     });
 
-            return;
-        }
+        //     return;
+        // }
 
         $('#form-step1').hide();
         $('#form-step2').show();
@@ -550,7 +550,7 @@
                 // device_id: formData.device_id,
                 // device_meta: formData.device_meta,
                 start_time_survei: formData.start_time_survei,
-                email: formData.email,
+                // email: formData.email,
             },
             dataType: "json",
             success: function(res) {
