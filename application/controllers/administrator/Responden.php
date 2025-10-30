@@ -53,6 +53,14 @@ class Responden extends CI_Controller {
 
 		$filter = $this->load->view('administrator/responden/vf_responden', $data, true);
 		$crud->set_top_filter($filter);
+		$crud->set_single_filter(false);
+
+		$btn = '
+			<button class="btn btn-success" type="button" id="btn_print">
+				<i class="fa fa-file-excel"></i> Excel
+			</button>
+		';
+		$crud->set_top_filter_btn($btn);
 
 		$js = az_add_js('administrator/responden/vjs_responden');
 		$azapp->add_js($js);
@@ -94,6 +102,11 @@ class Responden extends CI_Controller {
 		if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
 			$crud->add_where('responden.idruangan = "'.$sess_idruangan.'" ');
 		}
+		else {
+			if (strlen($idruangan) > 0) {
+				$crud->add_where('responden.idruangan = "' . $idruangan . '"');
+			}
+		}
         if (strlen($date1) > 0 && strlen($date2) > 0) {
             $crud->add_where('date(responden.tanggal_input) >= "'.Date('Y-m-d', strtotime($date1)).'"');
             $crud->add_where('date(responden.tanggal_input) <= "'.Date('Y-m-d', strtotime($date2)).'"');
@@ -103,9 +116,6 @@ class Responden extends CI_Controller {
 		}
 		if (strlen($nama_pasien) > 0) {
 			$crud->add_where('responden.nama_pasien = "' . $nama_pasien . '"');
-		}
-        if (strlen($idruangan) > 0) {
-			$crud->add_where('responden.idruangan = "' . $idruangan . '"');
 		}
         if (strlen($kepuasan) > 0) {
 			$crud->add_where('responden.kepuasan = "' . $kepuasan . '"');
@@ -214,5 +224,112 @@ class Responden extends CI_Controller {
 		}
 
 		echo json_encode($ret);
+	}
+
+	function print_excel(){
+		$date1 = $this->input->get('date1');
+		$date2 = $this->input->get('date2');
+		$no_rm = $this->input->get('vf_no_rm');
+		$nama_pasien = $this->input->get('vf_nama_pasien');
+		$idruangan = $this->input->get('idf_ruangan');
+		$kepuasan = $this->input->get('vf_kepuasan');
+
+		$role_name = $this->session->userdata('role_name');
+		$idrole = $this->session->userdata('idrole');
+		$sess_idruangan = $this->session->userdata('idruangan');
+		
+		
+		if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
+			$this->db->where('responden.idruangan = "'.$sess_idruangan.'" ');
+		}
+		else {
+			if (strlen($idruangan) > 0) {
+				$this->db->where('responden.idruangan = "' . $idruangan . '"');
+			}
+		}
+        if (strlen($date1) > 0 && strlen($date2) > 0) {
+            $this->db->where('date(responden.tanggal_input) >= "'.Date('Y-m-d', strtotime($date1)).'"');
+            $this->db->where('date(responden.tanggal_input) <= "'.Date('Y-m-d', strtotime($date2)).'"');
+        }
+		if (strlen($no_rm) > 0) {
+			$this->db->where('responden.no_rm = "' . $no_rm . '"');
+		}
+		if (strlen($nama_pasien) > 0) {
+			$this->db->where('responden.nama_pasien = "' . $nama_pasien . '"');
+		}
+        if (strlen($kepuasan) > 0) {
+			$this->db->where('responden.kepuasan = "' . $kepuasan . '"');
+		}
+
+		$this->db->join('ruangan', 'responden.idruangan = ruangan.idruangan');
+		
+		$this->db->select('idresponden, date_format(tanggal_input, "%d-%m-%Y %H:%i:%s") as txt_tanggal_input, no_rm, nama_pasien, nama_ruangan, kepuasan');
+		$this->db->order_by('idresponden DESC');
+		$responden = $this->db->get('responden');
+		
+
+		$app_name = az_get_config('app_name');
+		$this->load->library('AZApp');
+		$azapp = $this->azapp;
+		$azapp->add_phpexcel();
+
+		$file_excel = APPPATH . "assets/excel/responden.xlsx";
+		if (!file_exists($file_excel)) {
+			$file_excel = DEFPATH . "assets/excel/responden.xlsx";
+		}
+		$phpexcel = PHPExcel_IOFactory::load($file_excel);
+		$sheet0 = $phpexcel->setActiveSheetIndex(0);
+
+		$i = 0;
+		$start_row = 6;
+
+		$styleArray11 = array(
+			'borders' => array(
+				'allborders' => array(
+				'style' => PHPExcel_Style_Border::BORDER_THIN
+				)
+			)
+		);
+
+		$style = array(
+			'alignment' => array(
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+			)
+		);
+		
+		$sheet0->setCellValue("A2", $app_name);
+
+		if (strlen($date1) > 0 && strlen($date2) > 0) {
+			$sheet0->setCellValue("A3", Date('d/m/Y', strtotime($date1)).' - '.Date('d/m/Y', strtotime($date2)));
+		}
+		
+		foreach ($responden->result() as $key => $value) {
+
+			$kepuasan = '';
+			if ($value->kepuasan == "puas") {
+				$kepuasan = "Puas";
+			}
+			else if ($value->kepuasan == "tidak_puas") {
+				$kepuasan = "Tidak Puas";
+			}
+
+			$sheet0->setCellValue("A".($start_row + $i), $key+1);
+			$sheet0->setCellValue("B".($start_row + $i), $value->txt_tanggal_input);
+			$sheet0->setCellValue("C".($start_row + $i), $value->no_rm);
+			$sheet0->setCellValue("D".($start_row + $i), $value->nama_pasien);
+			$sheet0->setCellValue("E".($start_row + $i), $value->nama_ruangan);
+			$sheet0->setCellValue("F".($start_row + $i), $kepuasan);
+			$i++;
+		}
+
+		$sheet0->getStyle("A".$start_row.":F".($start_row + $i - 1))->applyFromArray($styleArray11);
+		$sheet0->getStyle("A".$start_row.":F".($start_row + $i - 1))->applyFromArray($style);
+		//write file and download
+		$filename='Responden '.Date('d-m-Y H:i:s').'.xls'; 
+		header('Content-Type: application/vnd.ms-excel'); 
+		header('Content-Disposition: attachment;filename="'.$filename.'"'); 
+		header('Cache-Control: max-age=0'); 
+		$objWriter = PHPExcel_IOFactory::createWriter($phpexcel, 'Excel5');  
+		$objWriter->save('php://output');
 	}
 }

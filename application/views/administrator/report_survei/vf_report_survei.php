@@ -56,7 +56,7 @@
 
         <div>
             <button class="btn btn-info btn-filter-survei" id="btn_top_filter" type="button"><i class="fa fa-search"></i> &nbsp;Filter</button>
-            <!-- <button class="btn btn-print-neraca btn-default"><i class="fa fa-print"></i> Cetak</button> -->
+            <button class="btn btn-success" type="button" id="btn_print"><i class="fa fa-file-excel"></i> Excel</button>
         </div>
     </div>
 </div>

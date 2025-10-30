@@ -96,6 +96,112 @@ class Report_survei extends CI_Controller {
 		echo $azapp->render();
 	}
 
+	function print_excel(){
+		$date1 = $this->input->get('date1');
+		$date2 = $this->input->get('date2');
+		$no_rm = $this->input->get('vf_no_rm');
+		$nama_pasien = $this->input->get('vf_nama_pasien');
+		$idruangan = $this->input->get('idf_ruangan');
+		$kepuasan = $this->input->get('vf_kepuasan');
+
+		$role_name = $this->session->userdata('role_name');
+		$idrole = $this->session->userdata('idrole');
+		$sess_idruangan = $this->session->userdata('idruangan');
+
+		$sess_idruangan = $this->session->userdata('idruangan');
+        
+		if ($date1 == null) {
+			$date1 = '01-'.Date('m-Y');
+		}
+        if ($date2 == null) {
+			$date2 = Date('t-m-Y');
+		}
+        if (strlen($idruangan) > 0) {
+            $this->db->where('idruangan', $idruangan);
+            $ruangan = $this->db->get('ruangan');
+        }
+		
+		$the_filter = array();
+		$the_filter = array(
+			'date1' => $date1,
+			'date2' => $date2,
+			'no_rm' => $no_rm,
+			'nama_pasien' => $nama_pasien,
+			'idruangan' => $idruangan,
+			'sess_idruangan' => $sess_idruangan,
+			'kepuasan' => $kepuasan,
+		);
+
+		$get_data = $this->get_data($the_filter);
+		// echo "<pre>"; print_r($get_data);die;
+		
+
+		$app_name = az_get_config('app_name');
+		$this->load->library('AZApp');
+		$azapp = $this->azapp;
+		$azapp->add_phpexcel();
+
+		$file_excel = APPPATH . "assets/excel/laporan_survei.xlsx";
+		if (!file_exists($file_excel)) {
+			$file_excel = DEFPATH . "assets/excel/laporan_survei.xlsx";
+		}
+		$phpexcel = PHPExcel_IOFactory::load($file_excel);
+		$sheet0 = $phpexcel->setActiveSheetIndex(0);
+
+		$i = 0;
+		$start_row = 6;
+
+		$styleArray11 = array(
+			'borders' => array(
+				'allborders' => array(
+				'style' => PHPExcel_Style_Border::BORDER_THIN
+				)
+			)
+		);
+
+		$style = array(
+			'alignment' => array(
+				'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+			)
+		);
+		
+		$sheet0->setCellValue("A2", $app_name);
+
+		if (strlen($date1) > 0 && strlen($date2) > 0) {
+			$sheet0->setCellValue("A3", Date('d/m/Y', strtotime($date1)).' - '.Date('d/m/Y', strtotime($date2)));
+		}
+
+		foreach ($get_data as $key => $value) {
+			foreach ($value as $v_key => $detail) {
+				$sheet0->setCellValue("A".($start_row + $i), $key+1);
+				$sheet0->setCellValue("B".($start_row + $i), $detail['tanggal_input']);
+				$sheet0->setCellValue("C".($start_row + $i), $detail['no_rm']);
+				$sheet0->setCellValue("D".($start_row + $i), $detail['nama_pasien']);
+				$sheet0->setCellValue("E".($start_row + $i), $detail['nama_ruangan']);
+				$sheet0->setCellValue("F".($start_row + $i), $detail['kepuasan']);
+				$sheet0->setCellValue("G".($start_row + $i), !empty($detail['layanan_petugas']) ? $detail['layanan_petugas'] : '-' );
+				$sheet0->setCellValue("H".($start_row + $i), !empty($detail['description_layanan_petugas']) ? $detail['description_layanan_petugas'] : '-' );
+				$sheet0->setCellValue("I".($start_row + $i), !empty($detail['layanan_fasilitas']) ? $detail['layanan_fasilitas'] : '-' );
+				$sheet0->setCellValue("J".($start_row + $i), !empty($detail['description_layanan_fasilitas']) ? $detail['description_layanan_fasilitas'] : '-' );
+				$sheet0->setCellValue("K".($start_row + $i), !empty($detail['layanan_prosedur']) ? $detail['layanan_prosedur'] : '-' );
+				$sheet0->setCellValue("L".($start_row + $i), !empty($detail['description_layanan_prosedur']) ? $detail['description_layanan_prosedur'] : '-' );
+				$sheet0->setCellValue("M".($start_row + $i), !empty($detail['layanan_waktu']) ? $detail['layanan_waktu'] : '-' );
+				$sheet0->setCellValue("N".($start_row + $i), !empty($detail['description_layanan_waktu']) ? $detail['description_layanan_waktu'] : '-' );
+				$i++;						
+			}
+		}
+
+		$sheet0->getStyle("A".$start_row.":N".($start_row + $i - 1))->applyFromArray($styleArray11);
+		$sheet0->getStyle("A".$start_row.":N".($start_row + $i - 1))->applyFromArray($style);
+		//write file and download
+		$filename='Laporan Survei '.Date('d-m-Y H:i:s').'.xls'; 
+		header('Content-Type: application/vnd.ms-excel'); 
+		header('Content-Disposition: attachment;filename="'.$filename.'"'); 
+		header('Cache-Control: max-age=0'); 
+		$objWriter = PHPExcel_IOFactory::createWriter($phpexcel, 'Excel5');  
+		$objWriter->save('php://output');
+	}
+
 	function get_data($the_data) {
 
 		$date1 = azarr($the_data, 'date1');

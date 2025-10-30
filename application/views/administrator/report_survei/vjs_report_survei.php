@@ -14,6 +14,11 @@
 		location.href = app_url + 'report_survei/?date1=' + date1 + '&date2=' + date2 + '&no_rm=' + no_rm + '&nama_pasien=' + nama_pasien + '&idruangan=' + idruangan + '&kepuasan=' + kepuasan;
 	});
 
+	jQuery('body').on('click', '#btn_print', function(){
+		var data = $('#form_report').serialize();
+		window.open(app_url + 'report_survei/print_excel?'+data, '_blank');
+	});
+
 
     // ketika urlnya sudah ada get maka set filternya
 	var date1 = "<?php echo $f_date1 ;?>";

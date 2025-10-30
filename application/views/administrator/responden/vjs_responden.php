@@ -17,3 +17,8 @@
 			}
 		})
 	});
+
+	jQuery('body').on('click', '#btn_print', function(){
+		var data = $('#form_report').serialize();
+		window.open(app_url + 'responden/print_excel?'+data, '_blank');
+	});
