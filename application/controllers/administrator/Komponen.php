@@ -18,10 +18,15 @@ class Komponen extends CI_Controller {
 		$azapp = $this->azapp;
 		$crud = $azapp->add_crud();
 		$this->load->helper('az_role');
+		$idrole = $this->session->userdata('idrole');
 
 		$crud->set_column(array('#', 'Nama Komponen', 'Status Kepuasan', 'Wajib Pilih Unit', 'Urutan', 'Status', azlang('Action')));
 		$crud->set_id($this->controller);
 		$crud->set_default_url(true);
+
+		if (aznav('role_view_komponen') && strlen($idrole) > 0) {
+			$crud->set_btn_add(false);
+		}
 
 		$crud->add_aodata('vf_nama_komponen', 'vf_nama_komponen');
 		$crud->add_aodata('vf_status_kepuasan', 'vf_status_kepuasan');
@@ -90,6 +95,7 @@ class Komponen extends CI_Controller {
 	}
 
 	function custom_style($key, $value, $data) {
+		$idrole = $this->session->userdata('idrole');
 
         if ($key == 'status_kepuasan') {
 			$lbl = 'default';
@@ -140,6 +146,10 @@ class Komponen extends CI_Controller {
 			$btn = $value;
 
 			$btn .= '<button class="btn btn-info btn-xs btn-copy btn-edit-komponen" data_id="'.$idkomponen.'"><i class="fa fa-file"></i> Copy</button>';
+
+			if (aznav('role_view_komponen') && strlen($idrole) > 0) {
+				$btn = '';
+			}
 
 			return $btn;
 		}

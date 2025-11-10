@@ -18,10 +18,15 @@ class Layanan extends CI_Controller {
 		$azapp = $this->azapp;
 		$crud = $azapp->add_crud();
 		$this->load->helper('az_role');
+		$idrole = $this->session->userdata('idrole');
 
 		$crud->set_column(array('#', 'Nama Layanan', 'Urutan', 'Status', azlang('Action')));
 		$crud->set_id($this->controller);
 		$crud->set_default_url(true);
+
+		if (aznav('role_view_layanan') && strlen($idrole) > 0) {
+			$crud->set_btn_add(false);
+		}
 
 		$crud->add_aodata('vf_nama_layanan', 'vf_nama_layanan');
 		$crud->add_aodata('vf_is_active', 'vf_is_active');
@@ -80,6 +85,7 @@ class Layanan extends CI_Controller {
 	}
 
 	function custom_style($key, $value, $data) {
+		$idrole = $this->session->userdata('idrole');
 
         if ($key == 'sequence') {
 			$sequence = az_thousand_separator($value);
@@ -103,6 +109,10 @@ class Layanan extends CI_Controller {
 
 			$btn .= '<button class="btn btn-info btn-xs btn-copy btn-edit-layanan" data_id="'.$idlayanan.'"><i class="fa fa-file"></i> Copy</button>';
 
+			if (aznav('role_view_layanan') && strlen($idrole) > 0) {
+				$btn = '';
+			}
+			
 			return $btn;
 		}
 		return $value;

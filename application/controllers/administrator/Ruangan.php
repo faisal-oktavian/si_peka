@@ -18,10 +18,15 @@ class Ruangan extends CI_Controller {
 		$azapp = $this->azapp;
 		$crud = $azapp->add_crud();
 		$this->load->helper('az_role');
+		$idrole = $this->session->userdata('idrole');
 
 		$crud->set_column(array('#', 'Nama Ruang', 'Status', azlang('Action')));
 		$crud->set_id($this->controller);
 		$crud->set_default_url(true);
+
+		if (aznav('role_view_ruangan') && strlen($idrole) > 0) {
+			$crud->set_btn_add(false);
+		}
 
 		$crud->add_aodata('vf_nama_ruangan', 'vf_nama_ruangan');
 		$crud->add_aodata('vf_is_active', 'vf_is_active');
@@ -80,6 +85,7 @@ class Ruangan extends CI_Controller {
 	}
 
 	function custom_style($key, $value, $data) {
+		$idrole = $this->session->userdata('idrole');
 
 		if ($key == 'is_active') {
 			$lbl = 'danger';
@@ -96,6 +102,10 @@ class Ruangan extends CI_Controller {
 			$btn = $value;
 
 			$btn .= '<button class="btn btn-info btn-xs btn-copy btn-edit-ruangan" data_id="'.$idruangan.'"><i class="fa fa-file"></i> Copy</button>';
+
+			if (aznav('role_view_ruangan') && strlen($idrole) > 0) {
+				$btn = '';
+			}
 
 			return $btn;
 		}
