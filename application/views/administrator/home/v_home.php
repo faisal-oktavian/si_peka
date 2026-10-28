@@ -82,6 +82,59 @@
     .separate {
         margin-top: 50px;
     }
+    .dashboard-room-filter {
+        margin: 0 0 24px;
+        padding: 18px 22px;
+        border: 1px solid #e3eaf0;
+        border-left: 4px solid #4caf50;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(31, 45, 61, .06);
+    }
+    .dashboard-room-filter .form-group {
+        display: flex;
+        align-items: center;
+        margin: 0;
+    }
+    .dashboard-room-filter label {
+        display: block;
+        margin: 0;
+        color: #34495e;
+        font-weight: 600;
+    }
+    .dashboard-room-filter .filter-hint {
+        display: block;
+        margin-top: 4px;
+        color: #7b8794;
+        font-size: 12px;
+        font-weight: 400;
+    }
+    .dashboard-room-filter .select2-container {
+        width: 100% !important;
+    }
+    .dashboard-room-filter .select2-selection {
+        min-height: 40px;
+        border-color: #d7e0e8;
+        border-radius: 6px;
+    }
+    .dashboard-room-filter .select2-selection__rendered {
+        line-height: 38px !important;
+    }
+    .dashboard-room-filter .select2-selection__arrow {
+        height: 38px !important;
+    }
+    .dashboard-room-filter .btn-clear-room {
+        padding-left: 0;
+        color: #607d8b;
+    }
+    @media (max-width: 767px) {
+        .dashboard-room-filter .form-group {
+            display: block;
+        }
+        .dashboard-room-filter .filter-control {
+            margin-top: 12px;
+        }
+    }
 </style>
 
 <!-- Chart.js CDN -->
@@ -90,6 +143,22 @@
 <?php
 	if (aznav('role_table')) {
 ?>		
+
+		<form class="dashboard-room-filter" id="form_room_filter" method="GET">
+			<div class="form-group">
+				<div class="col-sm-3">
+					<label for="idf_ruangan"><i class="fa fa-filter"></i> Filter Ruangan</label>
+					<span class="filter-hint">Kosongkan untuk menampilkan seluruh data yang dapat Anda akses.</span>
+				</div>
+				<div class="col-md-5 col-sm-6 filter-control">
+					<?php echo az_select_nama_ruang('f_ruangan');?>
+				</div>
+				<div class="col-sm-2 filter-control">
+					<button class="btn btn-link btn-clear-room" id="clear_room_filter" type="button">Tampilkan Semua</button>
+				</div>
+			</div>
+		</form>
+		
         <h1>Diagram Kepuasan Komponen</h1>
         <hr>
         

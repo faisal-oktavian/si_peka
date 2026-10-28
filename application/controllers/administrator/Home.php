@@ -22,12 +22,30 @@ class Home extends AZ_Controller {
 		$role_name = $this->session->userdata('role_name');
 		$idrole = $this->session->userdata('idrole');
 		$sess_idruangan = $this->session->userdata('idruangan');
+		$selected_idruangan = trim((string) $this->input->get('idf_ruangan', true));
+		$is_room_limited = strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'));
+		$apply_room_filter = function () use ($is_room_limited, $sess_idruangan, $selected_idruangan) {
+			
+			if ($is_room_limited) {
+				$this->db->where('responden.idruangan', $sess_idruangan);
+			}
+			if (strlen($selected_idruangan) > 0) {
+				$this->db->where('responden.idruangan', $selected_idruangan);
+			}
+		};
+
+		$selected_ruangan = null;
+		if (strlen($selected_idruangan) > 0) {
+			$selected_ruangan = $this->db
+				->select('nama_ruangan')
+				->where('idruangan', $selected_idruangan)
+				->get('ruangan')
+				->row();
+		}
 
 		// DIAGRAM KEPUASAN KOMPONEN
 			// Grafik Puas
-			if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
-				$this->db->where('responden.idruangan = "'.$sess_idruangan.'" ');
-			}
+			$apply_room_filter();
 			$this->db->where('kepuasan = "puas" ');
 			$this->db->where('is_active = "1" ');
 			$this->db->join('responden_detail', 'responden_detail.idresponden = responden.idresponden');
@@ -36,9 +54,7 @@ class Home extends AZ_Controller {
 			// echo "<pre>"; print_r($this->db->last_query()); die();
 
 			// Grafik Tidak Puas
-			if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan') ) ) {
-				$this->db->where('responden.idruangan = "'.$sess_idruangan.'" ');
-			}
+			$apply_room_filter();
 			$this->db->where('kepuasan = "tidak_puas" ');
 			$this->db->where('is_active = "1" ');
 			$this->db->join('responden_detail', 'responden_detail.idresponden = responden.idresponden');
@@ -59,9 +75,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_petugas IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_petugas_puas = $this->db
 					->group_by('responden_detail.idlayanan_petugas, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -78,9 +92,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_petugas IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'tidak_puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_petugas_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_petugas, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -103,9 +115,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_fasilitas IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_fasilitas_puas = $this->db
 					->group_by('responden_detail.idlayanan_fasilitas, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -122,9 +132,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_fasilitas IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'tidak_puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_fasilitas_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_fasilitas, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -147,9 +155,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_prosedur IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_prosedur_puas = $this->db
 					->group_by('responden_detail.idlayanan_prosedur, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -166,9 +172,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_prosedur IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'tidak_puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_prosedur_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_prosedur, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -191,9 +195,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_waktu IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_waktu_puas = $this->db
 					->group_by('responden_detail.idlayanan_waktu, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -210,9 +212,7 @@ class Home extends AZ_Controller {
 					->where('responden.is_active', 1)
 					->where('responden_detail.idlayanan_waktu IS NOT NULL', null, false)
 					->where('responden.kepuasan', 'tidak_puas');
-				if (strlen($idrole) > 0 && !in_array($role_name, array('administrator', 'kabid_yanmed', 'kasi_yanmed', 'kasi_keperawatan_dan_kebidanan'))) {
-					$this->db->where('responden.idruangan', $sess_idruangan);
-				}
+				$apply_room_filter();
 				$subquery_waktu_tidak_puas = $this->db
 					->group_by('responden_detail.idlayanan_waktu, nama_layanan')
 					->order_by('jumlah', 'DESC')
@@ -230,6 +230,8 @@ class Home extends AZ_Controller {
 		// array data
 		$data['respon_puas'] = $respon_puas;
 		$data['respon_tidak_puas'] = $respon_tidak_puas;
+		$data['f_idruangan'] = $selected_idruangan;
+		$data['f_nama_ruangan'] = $selected_ruangan ? $selected_ruangan->nama_ruangan : '';
 
 		// $data['arr_puas'] = $arr_puas;
 		// $data['arr_tidak_puas'] = $arr_tidak_puas;
@@ -256,8 +258,8 @@ class Home extends AZ_Controller {
 		$view = $this->load->view('administrator/home/v_home', $data, true);
 		$app->add_content($view);
 
-		// $js = az_add_js('administrator/home/vjs_home');
-		// $app->add_js($js);
+		$js = az_add_js('administrator/home/vjs_home');
+		$app->add_js($js);
 
 		echo $app->render();	
 	}
